@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VGHKS Random Duty Generator</title>
+    <link rel="stylesheet" href="vendor/css/bootstrap.min.css">
+    <link rel="stylesheet" href="vendor/css/bootstrap-switch.min.css">
+    <link rel="stylesheet" href="vendor/css/bootstrap-dialog.min.css">
+    <link rel="stylesheet" href="vendor/css/fullcalendar.min.css">
+    <link rel="stylesheet" href="vendor/css/themes/redmond/jquery-ui.min.css">
+    <link rel="stylesheet" href="vendor/css/jquery-ui-slider-pips.css">
+    <link rel="stylesheet" href="vendor/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/dashboard.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/calendar.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/index.css">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">VGHKS Random Duty Generator</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="#">Profile</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#usageModal">Help</a></li>
+                </ul>
+                <form class="navbar-form navbar-right">
+                    <input type="text" class="form-control" placeholder="Search...">
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 sidebar">
+                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button id="func_random_duty" class="btn btn-primary" type="submit">自動排班</button>
+                        <button id="func_clear_calendar" class="btn btn-danger" type="submit">清除自動排班</button>
+                        <button id="func_get_holiday_condition" class="btn btn-info" type="submit">更新建議班表</button>
+                    </div>
+                </div>
+                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                    <button id="func_deploy_test_data" class="btn btn-default" type="submit">Deploy Test Data</button>
+                    <button id="func_deploy_test_data_ordinary" class="btn btn-default" type="submit">Deploy Test Ord Data</button>
+                </div>
+                <a class="btn btn-default" id="func_download_excel" download="duties.xls" href="#" role="button">下載值班表 Excel</a>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="modeSwitch" class="col-sm-5 control-label">模式</label>
+                        <div class="col-sm-7">
+                            <input type="checkbox" id="mode_switch" checked>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputQodLimit" class="col-sm-5 control-label">
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    <input type="checkbox" id="use_qod_limit" checked>
+                                </div>
+                                <div class="col-sm-9 pull-right">QOD 上限</div>
+                            </div>
+                        </label>
+                        <div class="col-sm-7">
+                            <div id="inputQodLimitSlider" class="slider"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputStdDev" class="col-sm-5 control-label">
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    <input type="checkbox" id="use_std_dev_level" checked>
+                                </div>
+                                <div class="col-sm-9 pull-right">Std Dev</div>
+                            </div>
+                        </label>
+                        <div class="col-sm-7">
+                            <div id="inputStdDevSlider" class="slider"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPeople" class="col-sm-5 control-label">People</label>
+                        <div class="col-sm-7">
+                            <div id="inputPeopleSlider" class="slider"></div>
+                        </div>
+                    </div>
+                </form>
+                <div class="panel panel-default" id="suggested_pattern">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">建議排班（已排班數）</h3>
+                    </div>
+                </div>
+                <div id="block_ui_box">
+                    <div class="media">
+                        <div class="media-left">
+                            <i class="fa fa-spinner fa-spin fa-4x"></i>
+                        </div>
+                        <div class="media-body">
+                            <div class="media-heading" id="block_ui_message">Media heading</div>
+                            <button class="btn btn-warning pull-right btn_stop_random_duty_worker" type="submit">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="block_ui_dialog">
+                    <div class="media">
+                        <div class="media-left">
+                            <i class="fa fa-ban fa-4x"></i>
+                        </div>
+                        <div class="media-body">
+                            <div class="media-heading" id="block_ui_dialog_message"></div>
+                            <button class="btn btn-primary pull-right btn_stop_random_duty_worker" type="submit">Ok</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="growlUI" style="display:none">
+                    <h1>Growl Notification</h1>
+                    <h2>Have a nice day!</h2>
+                </div>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 main">
+                <div id="calEventDialog">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="eventTitle" class="col-sm-2 control-label">Title</label>
+                            <div class="col-sm-10">
+                                <select type="text" class="form-control" name="eventTitle" id="eventTitle"></select>
+                                <input type="hidden" name="eventOrigTitle" id="eventOrigTitle" />
+                                <input type="hidden" name="eventStart" id="eventStart" />
+                                <input type="hidden" name="eventId" id="eventId" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="eventPropNonduty" id="eventPropNonduty" /> Non-duty
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="cal_nav" style="position: absolute;">
+                    <nav>
+                        <ul class="pager">
+                            <li><a href="#" id="prev_month"><span aria-hidden="true">&larr;</span> Prev</a></li>
+                            <li><a href="#" id="next_month">Next <span aria-hidden="true">&rarr;</span></a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div id="calendars" class="row">
+                    <div class="col-sm-6 first_cal">
+                        <div id="cal1"></div>
+                    </div>
+                    <div class="col-sm-6 second_cal">
+                        <div id="cal2"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" id="summary_duties"></div>
+                    <div id="duties_datatable_div"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Help Modal -->
+    <div class="modal fade bootstrap-dialog type-info" id="usageModal" tabindex="-1" role="dialog" aria-labelledby="usageModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <div class="modal-title bootstrap-dialog-title" id="usageModalLabel">使用說明</div>
+                </div>
+                <div class="modal-body">
+                    <h4>步驟</h4>
+                    <ol>
+                        <li>選擇月份模式並移至欲排班的月份，選擇完畢後建議不要再更動</li>
+                        <li>檢查月曆中的假日是否有誤，可點選做刪除的動作</li>
+                        <li>設定人數</li>
+                        <li>檢查建議班表是否可以接受，可點選「更新建議班表」隨機調整</li>
+                        <li>依次填入班表，直到建議班表中「五」、「假」的紅字皆消除</li>
+                        <li>填入班表時，也可設定不值班的入員</li>
+                        <li>選擇是否開啟「QOD 上限」或「Std Dev」，並設定其數值</li>
+                        <li>點選「自動排班」，等候亂數班表產生</li>
+                        <li>若無法產生結果，可調降或關閉參數</li>
+                    </ol>
+                    <h4>限制</h4>
+                    <ul>
+                        <li>月份更動會造成已調整的假日失效</li>
+                        <li>在「2 月」模式中，建議不要開啟「Std Dev」，可能會跑不出結果</li>
+                        <li>不論是手動填入或自動產生的班表皆無法線上儲存，可用「下載值班表 Excel」或螢幕截圖的方式儲存</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="vendor/js/md5.js"></script>
+    <script src="vendor/js/jquery.min.js"></script>
+    <!-- bootstrap should be load earlier than jquery-ui, or the dialog will be wrong. -->
+    <script src="vendor/js/bootstrap.min.js"></script>
+    <script src="vendor/js/jquery-ui.min.js"></script>
+    <script src="vendor/js/jquery-ui-slider-pips.min.js"></script>
+    <script src="vendor/js/moment.min.js"></script>
+    <script src="vendor/js/bootstrap-switch.min.js"></script>
+    <script src="vendor/js/bootstrap-dialog.min.js"></script>
+    <script src="vendor/js/jquery.blockUI.js"></script>
+    <script src="vendor/js/fullcalendar.min.js"></script>
+    <script src="vendor/js/gcal.js"></script>
+    <script src="vendor/js/excellentexport.min.js"></script>
+    <script src="assets/js/private_functions.js"></script>
+    <script src="assets/js/lib_duties.js"></script>
+    <script src="assets/js/lib_holidays.js"></script>
+    <script src="assets/js/index.js"></script>
+</body>
+
+</html>
