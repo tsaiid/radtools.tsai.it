@@ -1,5 +1,9 @@
-$.blockUI({ message: '<h2><i class="fa fa-spinner fa-pulse"></i> Loading...</h2>' });
+// block UI before fullcalendar loads
+$.blockUI({
+    message: '<h2><i class="fa fa-spinner fa-pulse"></i> Loading...</h2>'
+});
 
+$(function() {
     //
     // flags
     //
@@ -10,7 +14,7 @@ $.blockUI({ message: '<h2><i class="fa fa-spinner fa-pulse"></i> Loading...</h2>
     // global vars
     //
     var is_cal1_loaded = false;
-    var is_cal2_loaded = false;
+    var is_cal2_loaded = false; // may only be used in 2-month mode
 
     $('#mode_switch').bootstrapSwitch({
         onText: "2 月",
@@ -380,12 +384,7 @@ $.blockUI({ message: '<h2><i class="fa fa-spinner fa-pulse"></i> Loading...</h2>
         eventDrop: calEventDrop,
         eventClick: calEventClick,
         eventRender: onlyTheMonthEventRender,
-        eventAfterAllRender: function() {
-            if (!is_cal2_loaded) {
-                console.log('cal2 loaded');
-                is_cal2_loaded = true;
-            }
-        }
+        eventAfterAllRender: function() {}
     });
 
     $("#cal1").fullCalendar({
@@ -412,7 +411,6 @@ $.blockUI({ message: '<h2><i class="fa fa-spinner fa-pulse"></i> Loading...</h2>
             update_summary_duties(groups);
 
             if (!is_cal1_loaded) {
-                console.log('cal1 loaded');
                 is_cal1_loaded = true;
             }
         }
@@ -1160,12 +1158,11 @@ $.blockUI({ message: '<h2><i class="fa fa-spinner fa-pulse"></i> Loading...</h2>
     //
     // Must be done at first time
     //
-$(function() {
-    var check_cal_loaded = setInterval(function () {
+    // unblock UI after cal1 is fully loaded.
+    var check_cal_loaded = setInterval(function() {
         if (is_cal1_loaded) {
             $.unblockUI();
             clearInterval(check_cal_loaded);
-    }
-}, 200);
-     console.log('document ready.');
+        }
+    }, 200);
 });
