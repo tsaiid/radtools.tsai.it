@@ -1,4 +1,4 @@
-$("body").block({ message: '<h2>Loading...</h2>' });
+$.blockUI({ message: '<h2>Loading...</h2>' });
 
     //
     // flags
@@ -1152,5 +1152,5 @@ $("body").block({ message: '<h2>Loading...</h2>' });
     // Must be done at first time
     //
 $(function() {
-     $("body").unblock();
+     //$("body").unblock();
 });
