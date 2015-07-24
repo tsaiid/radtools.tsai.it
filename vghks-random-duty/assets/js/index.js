@@ -1,4 +1,4 @@
-$.blockUI({ message: '<h2>Loading...</h2>' });
+$.blockUI({ message: '<h2><i class="fa fa-spinner fa-pulse"></i> Loading...</h2>' });
 
     //
     // flags
@@ -9,6 +9,9 @@ $.blockUI({ message: '<h2>Loading...</h2>' });
     //
     // global vars
     //
+    var is_cal1_loaded = false;
+    var is_cal2_loaded = false;
+
     $('#mode_switch').bootstrapSwitch({
         onText: "2 月",
         offText: "1 月",
@@ -377,7 +380,12 @@ $.blockUI({ message: '<h2>Loading...</h2>' });
         eventDrop: calEventDrop,
         eventClick: calEventClick,
         eventRender: onlyTheMonthEventRender,
-        eventAfterAllRender: function() {}
+        eventAfterAllRender: function() {
+            if (!is_cal2_loaded) {
+                console.log('cal2 loaded');
+                is_cal2_loaded = true;
+            }
+        }
     });
 
     $("#cal1").fullCalendar({
@@ -402,22 +410,23 @@ $.blockUI({ message: '<h2>Loading...</h2>' });
             update_current_duty_status();
             var groups = calculate_group_duties(get_all_duties());
             update_summary_duties(groups);
+
+            if (!is_cal1_loaded) {
+                console.log('cal1 loaded');
+                is_cal1_loaded = true;
+            }
         }
     });
 
     // navigator for next and prev months
     $('#next_month').click(function() {
         //console.log('prev is clicked, do something');
-        is_cal1_finished = false;
-        is_cal2_finished = false;
         $('#cal1').fullCalendar('next');
         $('#cal2').fullCalendar('next');
     });
 
     $('#prev_month').click(function() {
         //console.log('next is clicked, do something');
-        is_cal1_finished = false;
-        is_cal2_finished = false;
         $('#cal1').fullCalendar('prev');
         $('#cal2').fullCalendar('prev');
     });
@@ -1152,5 +1161,11 @@ $.blockUI({ message: '<h2>Loading...</h2>' });
     // Must be done at first time
     //
 $(function() {
-     //$("body").unblock();
+    var check_cal_loaded = setInterval(function () {
+        if (is_cal1_loaded) {
+            $.unblockUI();
+            clearInterval(check_cal_loaded);
+    }
+}, 200);
+     console.log('document ready.');
 });
