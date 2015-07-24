@@ -460,6 +460,12 @@
         }
       });
 
+      // preload images
+      $(':radio').each(function(){
+        $('<img/>')[0].src = $(this).val();
+        console.log($(this).val() + ' loaded.');
+      });
+
       // select default radio
       $('#male').find(':radio').first().click();
       $('#female').find(':radio').first().click();
