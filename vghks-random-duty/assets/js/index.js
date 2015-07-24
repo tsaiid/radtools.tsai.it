@@ -1,4 +1,5 @@
-$(function() {
+$("body").block({ message: '<h2>Loading...</h2>' });
+
     //
     // flags
     //
@@ -1150,4 +1151,6 @@ $(function() {
     //
     // Must be done at first time
     //
+$(function() {
+     $("body").unblock();
 });
