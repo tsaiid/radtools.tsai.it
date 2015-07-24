@@ -38,37 +38,37 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Dashboard</a></li>
-                    <li><a href="#">Settings</a></li>
-                    <li><a href="#">Profile</a></li>
-                    <li><a href="#" data-toggle="modal" data-target="#usageModal">Help</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#aboutModal"><i class="fa fa-info-circle"></i> 關於</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#usageModal"><i class="fa fa-book"></i> 使用說明</a></li>
                 </ul>
-                <form class="navbar-form navbar-right">
-                    <input type="text" class="form-control" placeholder="Search...">
-                </form>
             </div>
         </div>
     </nav>
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-3 sidebar">
-                <div class="btn-toolbar" role="toolbar" aria-label="...">
-                    <div class="btn-group" role="group" aria-label="...">
-                        <button id="func_random_duty" class="btn btn-primary" type="submit">自動排班</button>
-                        <button id="func_clear_calendar" class="btn btn-danger" type="submit">清除自動排班</button>
-                        <button id="func_get_holiday_condition" class="btn btn-info" type="submit">更新建議班表</button>
-                    </div>
-                </div>
+                <nav class="navbar">
+                    <div class="container-fluid">
+                        <div class="btn-toolbar navbar-right" role="toolbar" aria-label="...">
+                            <div class="btn-group" role="group" aria-label="...">
+                                <button id="func_random_duty" class="btn btn-primary navbar-btn" type="submit"><i class="fa fa-random"></i> 自動排班</button>
+                                <button id="func_clear_calendar" class="btn btn-danger navbar-btn" type="submit"><i class="fa fa-trash"></i> 清除自動排班</button>
+                            </div>
+                        </div>
+                        <!--
                 <div class="btn-toolbar" role="toolbar" aria-label="...">
                     <button id="func_deploy_test_data" class="btn btn-default" type="submit">Deploy Test Data</button>
                     <button id="func_deploy_test_data_ordinary" class="btn btn-default" type="submit">Deploy Test Ord Data</button>
                 </div>
-                <a class="btn btn-default" id="func_download_excel" download="duties.xls" href="#" role="button">下載值班表 Excel</a>
+                -->
+                    </div>
+                </nav>
+                <hr>
                 <form class="form-horizontal">
                     <div class="form-group">
-                        <label for="modeSwitch" class="col-sm-5 control-label">模式</label>
+                        <label for="modeSwitch" class="col-sm-5 control-label">月份模式 <i class="fa fa-calendar"></i></label>
                         <div class="col-sm-7">
-                            <input type="checkbox" id="mode_switch" checked>
+                            <input type="checkbox" id="mode_switch">
                         </div>
                     </div>
                     <div class="form-group">
@@ -77,7 +77,7 @@
                                 <div class="col-sm-1">
                                     <input type="checkbox" id="use_qod_limit" checked>
                                 </div>
-                                <div class="col-sm-9 pull-right">QOD 上限</div>
+                                <div class="col-sm-9 pull-right">QOD 上限 <i class="fa fa-bed"></i></div>
                             </div>
                         </label>
                         <div class="col-sm-7">
@@ -90,7 +90,7 @@
                                 <div class="col-sm-1">
                                     <input type="checkbox" id="use_std_dev_level" checked>
                                 </div>
-                                <div class="col-sm-9 pull-right">Std Dev</div>
+                                <div class="col-sm-9 pull-right">班距標準差 <i class="fa fa-tachometer"></i></div>
                             </div>
                         </label>
                         <div class="col-sm-7">
@@ -98,7 +98,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputPeople" class="col-sm-5 control-label">People</label>
+                        <label for="inputPeople" class="col-sm-5 control-label">People <i class="fa fa-users"></i></label>
                         <div class="col-sm-7">
                             <div id="inputPeopleSlider" class="slider"></div>
                         </div>
@@ -106,9 +106,19 @@
                 </form>
                 <div class="panel panel-default" id="suggested_pattern">
                     <div class="panel-heading">
+                        <div class="btn-toolbar pull-right" role="toolbar" aria-label="...">
+                            <div class="btn-group" role="group" aria-label="...">
+                                <button id="func_get_holiday_condition" class="btn btn-info btn-xs" type="submit"><i class="fa fa-refresh"></i> 更新</button>
+                                <button id="func_edit_duty_patterns" type="button" class="btn btn-warning btn-xs" aria-label="Edit Pattern">
+                                    <i class="fa fa-pencil-square-o"></i> 修改
+                                </button>
+                            </div>
+                        </div>
                         <h3 class="panel-title">建議排班（已排班數）</h3>
                     </div>
                 </div>
+                <hr>
+                <a class="btn btn-default pull-right" id="func_download_excel" download="duties.xls" href="#" role="button"><i class="fa fa-cloud-download"></i> 下載值班表 Excel</a>
                 <div id="block_ui_box">
                     <div class="media">
                         <div class="media-left">
@@ -149,10 +159,21 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <div class="checkbox">
+                            <label for="eventProp" class="col-sm-2 control-label">類別</label>
+                            <div class="col-sm-10">
+                                <div class="radio">
                                     <label>
-                                        <input type="checkbox" name="eventPropNonduty" id="eventPropNonduty" /> Non-duty
+                                        <input type="radio" name="eventProp" id="eventPropDuty" value="eventPropDuty" checked /> 值班
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="eventProp" id="eventPropNonduty" value="eventPropNonduty" /> 設為不值
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="eventProp" id="eventPropHoliday" value="eventPropHoliday" /> 設為假日
                                     </label>
                                 </div>
                             </div>
@@ -168,7 +189,7 @@
                     </nav>
                 </div>
                 <div id="calendars" class="row">
-                    <div class="col-sm-6 first_cal">
+                    <div class="first_cal">
                         <div id="cal1"></div>
                     </div>
                     <div class="col-sm-6 second_cal">
@@ -178,6 +199,32 @@
                 <div class="row">
                     <div class="col-sm-12" id="summary_duties"></div>
                     <div id="duties_datatable_div"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- About Modal -->
+    <div class="modal fade bootstrap-dialog type-info" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <div class="modal-title bootstrap-dialog-title" id="aboutModalLabel">關於</div>
+                </div>
+                <div class="modal-body">
+                    <h3>VGHKS Random Duty Generator <span id="appVersion"></span></h3>
+                    <p>班表產生器，以亂數排列的方式產生班表，可加上 QOD 值班及班距標準差等限制，以期獲取排班最大的公平性。目前只適用高榮放射線部的積點排班方式。</p>
+                    <h4>Author</h4>
+                    <p>I-Ta Tsai, 現為高榮放射線部住院醫師</p>
+                    <p><a class="btn btn-default btn-xs" href="https://twitter.com/tsaiid" role="button"><i class="fa fa-twitter"></i> Follow @tsaiid</a> <a class="btn btn-default btn-xs" href="https://tsai.it/" role="button"><i class="fa fa-rss"></i> Blog</a></p>
+                    <h4>License</h4>
+                    <p>MIT</p>
+                    <h4>Sources</h4>
+                    <p><a class="btn btn-default btn-xs" href="https://github.com/tsaiid/vghks-random-duty" role="button"><i class="fa fa-github"></i> Hosted on GitHub</a></p>
+                    <p>如有疑問或問題，請至 <a href="https://github.com/tsaiid/vghks-random-duty/issues">GitHub Issues</a> 回報。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -194,9 +241,9 @@
                     <h4>步驟</h4>
                     <ol>
                         <li>選擇月份模式並移至欲排班的月份，選擇完畢後建議不要再更動</li>
-                        <li>檢查月曆中的假日是否有誤，可點選做刪除的動作</li>
+                        <li>檢查月曆中的假日是否有誤，可點選做刪除的動作，或新增自訂假日</li>
                         <li>設定人數</li>
-                        <li>檢查建議班表是否可以接受，可點選「更新建議班表」隨機調整</li>
+                        <li>檢查建議班表是否可以接受，可點選「更新建議班表」隨機調整或手動修改</li>
                         <li>依次填入班表，直到建議班表中「五」、「假」的紅字皆消除</li>
                         <li>填入班表時，也可設定不值班的入員</li>
                         <li>選擇是否開啟「QOD 上限」或「Std Dev」，並設定其數值</li>
@@ -229,6 +276,7 @@
     <script src="vendor/js/fullcalendar.min.js"></script>
     <script src="vendor/js/gcal.js"></script>
     <script src="vendor/js/excellentexport.min.js"></script>
+    <script src="vendor/js/jquery.contenteditable.js"></script>
     <script src="assets/js/private_functions.js"></script>
     <script src="assets/js/lib_duties.js"></script>
     <script src="assets/js/lib_holidays.js"></script>

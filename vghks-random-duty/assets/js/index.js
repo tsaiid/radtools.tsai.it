@@ -8,9 +8,6 @@ $(function() {
     //
     // global vars
     //
-    var is_cal1_finished = false;
-    var is_cal2_finished = false;
-
     $('#mode_switch').bootstrapSwitch({
         onText: "2 月",
         offText: "1 月",
@@ -20,6 +17,7 @@ $(function() {
             if (state) { // 2-month mode
                 $('.first_cal').toggleClass('col-sm-6', state, 600).promise().done(function() {
                     $('.second_cal').show();
+                    $('#cal2').fullCalendar('render'); // force render the cal, needed for from hidden div
                 });
             } else { // 1-month mode
                 $('.second_cal').hide();
@@ -50,11 +48,11 @@ $(function() {
         max: 9,
         min: 3,
         value: 4,
-        create: update_dialog_select_options,
+        create: update_dialog_title_type,
         change: function() {
             calculate_suggested_patterns();
             update_current_duty_status();
-            update_dialog_select_options();
+            update_dialog_title_type();
         },
     }).slider("pips", {
         rest: "label"
@@ -89,16 +87,16 @@ $(function() {
     // Dialog related
     //
     // Dialog for insert new event
-    function get_duty_conflict_status(title, orig_title, is_edit_dialog, is_non_duty, prev_set_duty, prev_set_non_duties, already_had_duty) {
+    function get_duty_conflict_status(title, orig_title, is_edit_dialog, duty_type, prev_set_duty, prev_set_non_duties, already_had_duty) {
         var status;
         if (is_edit_dialog) {
-            if (is_non_duty) {
+            if (duty_type == "eventPropNonduty") {
                 if ($.inArray(parseInt(title), prev_set_non_duties) > -1) {
                     status = "Already set the same non-duty!";
                 } else if (prev_set_duty == title && title != orig_title) {
                     status = "Conflict! The staff (" + title + ") is already on duty!";
                 }
-            } else {
+            } else if (duty_type == "eventPropDuty") {
                 if (already_had_duty) {
                     if (title == prev_set_duty && title != orig_title) {
                         status = "Already had a duty!";
@@ -116,14 +114,14 @@ $(function() {
                 }
             }
         } else {
-            if (is_non_duty) {
+            if (duty_type == "eventPropNonduty") {
                 if ($.inArray(parseInt(title), prev_set_non_duties) > -1) {
                     status = "Already had a same non-duty!";
                 }
                 if (prev_set_duty == title) {
                     status = "Conflict! The staff (" + title + ") should be on duty!";
                 }
-            } else {
+            } else if (duty_type == "eventPropDuty") {
                 if (already_had_duty) {
                     status = "Already had a duty!";
                 } else if ($.inArray(parseInt(title), prev_set_non_duties) > -1) {
@@ -143,13 +141,13 @@ $(function() {
         if ($('#eventTitle').val() !== '') {
             var preset_duties = get_preset_duties();
             var preset_non_duties = get_preset_non_duties();
-            var is_non_duty = $('#eventPropNonduty').is(":checked");
+            var duty_type = $('input[name=eventProp]:checked').val();
             var prev_set_duty = get_preset_duty(preset_duties, date);
             var prev_set_non_duties = get_preset_non_duties_by_date(preset_non_duties, date);
             var already_had_duty = (prev_set_duty !== undefined);
             var has_same_non_duty = check_if_has_same_non_duty(preset_non_duties, date, title);
 
-            var duty_conflict_status = get_duty_conflict_status(title, orig_title, is_edit_dialog, is_non_duty, prev_set_duty, prev_set_non_duties, already_had_duty);
+            var duty_conflict_status = get_duty_conflict_status(title, orig_title, is_edit_dialog, duty_type, prev_set_duty, prev_set_non_duties, already_had_duty);
             if (!duty_conflict_status) {
                 if (is_edit_dialog) {
                     // have to remove old and add new
@@ -157,9 +155,23 @@ $(function() {
                     $("#cal2").fullCalendar('removeEvents', $('#eventId').val());
                 }
 
-                var className = (is_non_duty ? 'preset-non-duty-event' : 'preset-duty-event');
-                var color = (is_non_duty ? non_duty_color : duty_colors[title]);
-                var eventTitle = (is_non_duty ? ' ' + title + ' 不值' : title); // add a space for sort first
+                var className, color, eventTitle;
+                switch (duty_type) {
+                    case "eventPropDuty":
+                        className = 'preset-duty-event';
+                        color = duty_colors[title];
+                        eventTitle = title;
+                        break;
+                    case "eventPropNonduty":
+                        className = 'preset-non-duty-event';
+                        color = non_duty_color;
+                        eventTitle = ' ' + title + ' 不值'; // add a space for sort first
+                        break;
+                    default: // eventPropHoliday
+                        className = 'gcal-holiday';
+                        color = "";
+                        eventTitle = '  假日 ' + title; // add two spaces for sort first
+                }
                 var event = {
                     id: CryptoJS.MD5(date + eventTitle).toString(),
                     title: eventTitle,
@@ -170,6 +182,22 @@ $(function() {
                 };
                 $("#cal1").fullCalendar('renderEvent', event, true);
                 $("#cal2").fullCalendar('renderEvent', event, true);
+
+                // Holiday should add a background event
+                if (duty_type == "eventPropHoliday") {
+                    var event = {
+                        id: CryptoJS.MD5(date + eventTitle).toString(),
+                        start: date,
+                        backgroundColor: holiday_bg_color,
+                        rendering: 'background',
+                        className: 'gcal-holiday-background'
+                    };
+                    $("#cal1").fullCalendar('renderEvent', event, true);
+                    $("#cal2").fullCalendar('renderEvent', event, true);
+
+                    // update suggested patterns
+                    calculate_suggested_patterns();
+                }
             } else {
                 myGrowlUI("Warning", duty_conflict_status);
             }
@@ -178,20 +206,31 @@ $(function() {
         $("#cal2").fullCalendar('unselect');
     }
 
-    // set dialog select options by people number
-    function update_dialog_select_options() {
-        var people = parseInt($('#inputPeopleSlider').slider("option", "value"));
-        $('#eventTitle').empty();
-        for (var i = 1; i <= people; i++) {
-            var option_html = '<option>' + i + '</option>';
-            $('#eventTitle').append(option_html);
+    // default set dialog select options by people number
+    // or set to input text for Holiday event
+    function update_dialog_title_type(duty_type) {
+        var title_html;
+        if (duty_type == 'eventPropHoliday') {
+            title_html = '<input type="text" class="form-control" id="eventTitle" />';
+        } else {
+            var people = parseInt($('#inputPeopleSlider').slider("option", "value"));
+            title_html = '<select type="text" class="form-control" name="eventTitle" id="eventTitle">';
+            for (var i = 1; i <= people; i++) {
+                title_html += '<option>' + i + '</option>';
+            }
+            title_html += '</select>';
         }
+        $('#eventTitle').replaceWith(title_html);
     }
 
     $('#calEventDialog').dialog({
         resizable: false,
         autoOpen: false,
         width: 400,
+    });
+
+    $('input[name=eventProp]').change(function() {
+        update_dialog_title_type($(this).val())
     });
 
     //
@@ -204,7 +243,7 @@ $(function() {
     var calGoogleCalendarApiKey = 'AIzaSyCutCianVgUaWaCHeTDMk2VzyZ8bcNUdOY';
     var calEventSources = [{
         googleCalendarId: 'taiwan__zh-TW@holiday.calendar.google.com',
-        backgroundColor: '#f5dfe2',
+        backgroundColor: "#f5dfe2",
         rendering: 'background',
         className: 'gcal-holiday-background'
     }, {
@@ -214,7 +253,7 @@ $(function() {
         eventDataTransform: function(rawEventData) { // drop url from google cal
             return {
                 id: rawEventData.id,
-                title: '  ' + rawEventData.title, // prepend two spaces to be sort first.
+                title: '  假日 ' + rawEventData.title, // prepend two spaces to be sort first.
                 start: rawEventData.start,
                 end: rawEventData.end,
                 className: 'gcal-holiday'
@@ -227,11 +266,11 @@ $(function() {
         // set ui dialog
         $("#calEventDialog").dialog("option", "title", "Add Duty");
         $("#calEventDialog").dialog("option", "buttons", {
-            Save: function() {
+            '新增': function() {
                 save_or_update_event(false);
                 $(this).dialog('close');
             },
-            Cancel: function() {
+            '取消': function() {
                 $(this).dialog('close');
             }
         });
@@ -240,25 +279,40 @@ $(function() {
     var calEventClick = function(calEvent, jsEvent, view) {
         $('#eventStart').val(calEvent.start.format("YYYY-MM-DD"));
         $('#eventId').val(calEvent.id);
-        var title = calEvent.title.trim().split(" 不值")[0]; // trim for a space prepend to non-duty
-        var is_non_duty = (calEvent.title.indexOf(" 不值") > -1);
-        $('#calEventDialog #eventPropNonduty').prop("checked", is_non_duty);
-        $('#calEventDialog #eventTitle').val(title);
-        $('#calEventDialog #eventOrigTitle').val(title);
+        var title, duty_type;
+        if (calEvent.title.indexOf("  假日 ") > -1) {
+            $('#eventPropHoliday').prop("checked", true);
+            title = calEvent.title.split("  假日 ")[1]; // trim for a space prepend to non-duty
+            duty_type = 'eventPropHoliday';
+        } else if (calEvent.title.indexOf(" 不值") > -1) {
+            $('#eventPropNonduty').prop("checked", true);
+            title = calEvent.title.trim().split(" 不值")[0]; // trim for a space prepend to non-duty
+            duty_type = 'eventPropNonduty';
+        } else {
+            $('#eventPropDuty').prop("checked", true);
+            title = calEvent.title;
+            duty_type = 'eventPropDuty';
+        }
+        update_dialog_title_type(duty_type);
+        $('#eventTitle').val(title);
+        $('#eventOrigTitle').val(title);
 
         // set ui dialog
         $("#calEventDialog").dialog("option", "title", "Edit Duty");
         $("#calEventDialog").dialog("option", "buttons", {
-            Update: function() {
+            '更新': function() {
                 save_or_update_event(true);
                 $(this).dialog("close");
             },
-            Delete: function() {
+            '刪除': function() {
                 $("#cal1").fullCalendar('removeEvents', $('#eventId').val());
                 $("#cal2").fullCalendar('removeEvents', $('#eventId').val());
+                if (duty_type == 'eventPropHoliday') {
+                    calculate_suggested_patterns();
+                }
                 $(this).dialog("close");
             },
-            Cancel: function() {
+            '取消': function() {
                 $(this).dialog('close');
             }
         });
@@ -301,6 +355,7 @@ $(function() {
         "#20006E",
     ];
     var non_duty_color = "#000000";
+    var holiday_bg_color = "#f5dfe2";
 
     // init cal1 and cal2
     $("#cal2").fullCalendar({
@@ -321,34 +376,32 @@ $(function() {
         eventDrop: calEventDrop,
         eventClick: calEventClick,
         eventRender: onlyTheMonthEventRender,
+        eventAfterAllRender: function() {}
+    });
+
+    $("#cal1").fullCalendar({
+        defaultDate: nextMonth,
+        header: {
+            left: 'title',
+            center: '',
+            right: ''
+        },
+        height: 580,
+        firstDay: 1,
+        theme: true,
+        googleCalendarApiKey: calGoogleCalendarApiKey,
+        eventSources: calEventSources,
+        selectable: true,
+        dayClick: calDayClick,
+        editable: true,
+        eventDrop: calEventDrop,
+        eventClick: calEventClick,
+        eventRender: onlyTheMonthEventRender,
         eventAfterAllRender: function() {
-            is_cal2_finished = true;
+            update_current_duty_status();
+            var groups = calculate_group_duties(get_all_duties());
+            update_summary_duties(groups);
         }
-    }).promise().done(function() {
-        $("#cal1").fullCalendar({
-            defaultDate: nextMonth,
-            header: {
-                left: 'title',
-                center: '',
-                right: ''
-            },
-            height: 580,
-            firstDay: 1,
-            theme: true,
-            googleCalendarApiKey: calGoogleCalendarApiKey,
-            eventSources: calEventSources,
-            selectable: true,
-            dayClick: calDayClick,
-            editable: true,
-            eventDrop: calEventDrop,
-            eventClick: calEventClick,
-            eventRender: onlyTheMonthEventRender,
-            eventAfterAllRender: function() {
-                update_current_duty_status();
-                var groups = calculate_group_duties(get_all_duties());
-                update_summary_duties(groups);
-            }
-        });
     });
 
     // navigator for next and prev months
@@ -600,38 +653,136 @@ $(function() {
         }
     }
 
+    function update_duty_patterns(patterns) {
+        if (patterns !== undefined) {
+            $('#suggested_pattern table').remove();
+            var pattern_html = '<table class="table table-striped"><tr><th>No.</th><th>平</th><th>五</th><th>假</th><th>P</th></tr>';
+            var o_count = 0,
+                f_count = 0,
+                h_count = 0;
+            patterns.forEach(function(pattern, index) {
+                var point = parseInt(pattern[1]) + parseInt(pattern[2]) * 2;
+                pattern_html += '<tr id="person_' + (index + 1) + '"><td>' + (index + 1) + '</td><td class="ordinary_count">' + pattern[0] + ' <span class="current_status"></span></td><td class="friday_count">' + pattern[1] + ' <span class="current_status"></span></td><td class="holiday_count">' + pattern[2] + ' <span class="current_status"></span></td><td>' + point + '</td></tr>';
+                o_count += pattern[0];
+                f_count += pattern[1];
+                h_count += pattern[2];
+            });
+            var t_count = o_count + f_count + h_count;
+            pattern_html += '<tr><th>共</th><th>' + o_count + '</th><th>' + f_count + '</th><th>' + h_count + '</th><th>' + t_count + '</th></tr></table>';
+            $('#suggested_pattern').append(pattern_html);
+        }
+    }
+
     function calculate_suggested_patterns() {
         // clear previous data first
         $('#suggested_pattern').removeData("patterns");
-        $('#suggested_pattern table').remove();
 
         var start_date = $('#cal1').fullCalendar('getDate').startOf('month');
         var people = parseInt($('#inputPeopleSlider').slider("option", "value"));
         var month_span = $('#mode_switch').bootstrapSwitch('state') ? 2 : 1;
 
         var suggested_patterns = get_suggested_patterns(start_date, month_span, people);
-        if (suggested_patterns !== undefined) {
-            var suggested_pattern_html = '<table class="table table-striped"><tr><th>No.</th><th>平</th><th>五</th><th>假</th><th>P</th></tr>';
-            var o_count = 0,
-                f_count = 0,
-                h_count = 0;
-            suggested_patterns.forEach(function(pattern, index) {
-                var point = parseInt(pattern[1]) + parseInt(pattern[2]) * 2;
-                suggested_pattern_html += '<tr id="person_' + (index + 1) + '"><td>' + (index + 1) + '</td><td class="ordinary_count">' + pattern[0] + ' <span class="current_status"></span></td><td class="friday_count">' + pattern[1] + ' <span class="current_status"></span></td><td class="holiday_count">' + pattern[2] + ' <span class="current_status"></span></td><td>' + point + '</td></tr>';
-                o_count += pattern[0];
-                f_count += pattern[1];
-                h_count += pattern[2];
-            });
-            var t_count = o_count + f_count + h_count;
-            suggested_pattern_html += '<tr><th>共</th><th>' + o_count + '</th><th>' + f_count + '</th><th>' + h_count + '</th><th>' + t_count + '</th></tr></table>';
-            $('#suggested_pattern').append(suggested_pattern_html);
-            $('#suggested_pattern').data("patterns", suggested_patterns); // save object for random duty to match
-        }
+        $('#suggested_pattern').data("patterns", suggested_patterns); // save object for random duty to match
+        update_duty_patterns(suggested_patterns);
     }
 
     $('#func_get_holiday_condition').click(function() {
         calculate_suggested_patterns();
         update_current_duty_status();
+    });
+
+    $('#func_edit_duty_patterns').click(function() {
+        var patterns = $('#suggested_pattern').data("patterns");
+        if (patterns === undefined) {
+            BootstrapDialog.alert('Patterns are undefinde!');
+            return;
+        }
+
+        var o_count = 0,
+            f_count = 0,
+            h_count = 0;
+        var table_html = '<table id="edit_patterns_table" class="table"><tr><th>No.</th><th>平</th><th>五</th><th>假</th><th>P</th></tr>';
+        patterns.forEach(function(p, i) {
+            o_count += p[0];
+            f_count += p[1];
+            h_count += p[2];
+            var pt = p[1] + p[2] * 2;
+            table_html += '<tr><td>' + (i + 1) + '</td><td class="duty_data" contentEditable>' + p[0] + '</td><td class="duty_data" contentEditable>' + p[1] + '</td><td class="duty_data" contentEditable>' + p[2] + '</td><td class="total_points">' + pt + '</td></tr>';
+        });
+        var t_count = o_count + f_count + h_count;
+        table_html += '<tr><th>共</th><th>' + o_count + ' <span class="o_count bg-danger"></span></th><th>' + f_count + ' <span class="f_count bg-danger"></span></th><th>' + h_count + ' <span class="h_count bg-danger"></span></th><th>' + t_count + '</th></tr></table>';
+
+        function getPatternTableData(table) {
+            var data = [];
+            table.find('tr:has(td)').each(function(rowIndex, r) {
+                var cols = [];
+                $(this).find('td.duty_data').each(function(colIndex, c) {
+                    cols.push(parseInt(c.textContent));
+                });
+                data.push(cols);
+            });
+            return data;
+        }
+
+        BootstrapDialog.show({
+            title: '修改排班樣式',
+            message: table_html,
+            cssClass: 'login-dialog',
+            buttons: [{
+                label: 'Update',
+                cssClass: 'btn-primary',
+                action: function(dialog) {
+                    // check if pattern matches
+                    var table_data = getPatternTableData($('#edit_patterns_table'));
+                    var tb_o_count = 0,
+                        tb_f_count = 0,
+                        tb_h_count = 0;
+                    table_data.forEach(function(p) {
+                        tb_o_count += parseInt(p[0]);
+                        tb_f_count += parseInt(p[1]);
+                        tb_h_count += parseInt(p[2]);
+                    });
+                    if (tb_o_count != o_count || tb_f_count != f_count || tb_h_count != h_count) {
+                        BootstrapDialog.alert("總班數錯誤，請再檢查");
+                        console.log(table_data);
+                        return;
+                    }
+
+                    // update jquery data
+                    $('#suggested_pattern').data("patterns", table_data);
+                    dialog.close();
+                    update_duty_patterns(table_data);
+                }
+            }],
+            onshown: function(dialogRef) {
+                $('#edit_patterns_table').contentEditable().change(function(e) {
+                    //console.log(e.action);
+                    //console.log(e.changed);
+                    //console.log(e.changedField);
+
+                    if (e.action == "save") {
+                        var table_data = getPatternTableData($('#edit_patterns_table'));
+                        // update point
+                        var tb_o_count = 0,
+                            tb_f_count = 0,
+                            tb_h_count = 0;
+                        table_data.forEach(function(p, i) {
+                            tb_o_count += parseInt(p[0]);
+                            tb_f_count += parseInt(p[1]);
+                            tb_h_count += parseInt(p[2]);
+                            var points = parseInt(p[1]) + parseInt(p[2]) * 2;
+                            $('#edit_patterns_table td.total_points').eq(i).html(points);
+                        });
+
+                        // update total if not match
+                        $('#edit_patterns_table th .o_count').html(tb_o_count != o_count ? "(" + tb_o_count + ")" : "");
+                        $('#edit_patterns_table th .f_count').html(tb_f_count != f_count ? "(" + tb_f_count + ")" : "");
+                        $('#edit_patterns_table th .h_count').html(tb_h_count != h_count ? "(" + tb_h_count + ")" : "");
+                    }
+                });
+
+            }
+        });
     });
 
     function update_summary_duties(groups_duties) {
