@@ -805,7 +805,7 @@ $(function() {
             var summary_duties_html = '<table class="table table-striped"><tr><th>No.</th><th>Dates</th><th>Intervals</th><th>Std Dev</th></tr>';
             var preset_holidays = get_preset_holidays();
             for (var p in groups_duties) {
-                var dates = groups_duties[p].dates.sort().map(function(d) {
+                var dates = $.map(groups_duties[p].dates.sort(), function(d) {
                     var date_html = '<span class="';
                     // colorize if friday or holiday
                     if (is_holiday(preset_holidays, d) || is_weekend(d)) {
@@ -854,7 +854,7 @@ $(function() {
         var month_span = $('#mode_switch').bootstrapSwitch('state') ? 2 : 1;
         var table_html = '<table id="duties_datatable" class="table">';
         var duties_map = {};
-        duties.map(function(x) {
+        $.map(duties, function(x) {
             return duties_map[x[0]] = x[1]
         });
 
