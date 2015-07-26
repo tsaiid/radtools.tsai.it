@@ -518,7 +518,7 @@ $(function() {
             }
         });
 
-        var preset_holidays = $.map(preset_holidays1.concat(preset_holidays2), function(event) {
+        var preset_holidays = preset_holidays1.concat(preset_holidays2).map(function(event) {
             return event.start.format("YYYY-MM-DD");
         });
 
@@ -587,9 +587,6 @@ $(function() {
             }
             the_day.add(1, 'days');
         }
-        //console.log(ordinary_count);
-        //console.log(friday_count);
-        //console.log(holiday_count);
 
         var c = 0;
         var patterns;
@@ -805,7 +802,7 @@ $(function() {
             var summary_duties_html = '<table class="table table-striped"><tr><th>No.</th><th>Dates</th><th>Intervals</th><th>Std Dev</th></tr>';
             var preset_holidays = get_preset_holidays();
             for (var p in groups_duties) {
-                var dates = $.map(groups_duties[p].dates.sort(), function(d) {
+                var dates = groups_duties[p].dates.sort().map(function(d) {
                     var date_html = '<span class="';
                     // colorize if friday or holiday
                     if (is_holiday(preset_holidays, d) || is_weekend(d)) {
@@ -854,7 +851,7 @@ $(function() {
         var month_span = $('#mode_switch').bootstrapSwitch('state') ? 2 : 1;
         var table_html = '<table id="duties_datatable" class="table">';
         var duties_map = {};
-        $.map(duties, function(x) {
+        duties.map(function(x) {
             return duties_map[x[0]] = x[1]
         });
 
