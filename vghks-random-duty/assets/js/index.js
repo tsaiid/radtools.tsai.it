@@ -100,23 +100,23 @@ $(function() {
         if (is_edit_dialog) {
             if (duty_type == "eventPropNonduty") {
                 if ($.inArray(parseInt(title), prev_set_non_duties) > -1) {
-                    status = "Already set the same non-duty!";
+                    status = "重覆設定不值班人員";
                 } else if (prev_set_duty == title && title != orig_title) {
-                    status = "Conflict! The staff (" + title + ") is already on duty!";
+                    status = "人員 " + title + " 本日已設為值班，不可再設為不值！";
                 }
             } else if (duty_type == "eventPropDuty") {
                 if (already_had_duty) {
                     if (title == prev_set_duty && title != orig_title) {
-                        status = "Already had a duty!";
+                        status = "本日已有人值班";
                     } else if (title != prev_set_duty && title == orig_title) {
-                        status = "Already had a duty!";
+                        status = "本日已有人值班";
                     } else if ($.inArray(parseInt(title), prev_set_non_duties) > -1) {
-                        status = "Conflict! The staff (" + title + ") should not be on duty!";
+                        status = "人員 " + title + " 本日已設為不可值班！";
                     }
                 } else {
                     if ($.inArray(parseInt(title), prev_set_non_duties) > -1) {
                         if (title != orig_title) {
-                            status = "Conflict! The staff (" + title + ") should not be on duty!";
+                            status = "人員 " + title + " 本日已設為不可值班！";
                         }
                     }
                 }
@@ -124,16 +124,16 @@ $(function() {
         } else {
             if (duty_type == "eventPropNonduty") {
                 if ($.inArray(parseInt(title), prev_set_non_duties) > -1) {
-                    status = "Already had a same non-duty!";
+                    status = "重覆設定不值班人員";
                 }
                 if (prev_set_duty == title) {
-                    status = "Conflict! The staff (" + title + ") should be on duty!";
+                    status = "人員 " + title + " 本日已設為值班，不可再設為不值！";
                 }
             } else if (duty_type == "eventPropDuty") {
                 if (already_had_duty) {
-                    status = "Already had a duty!";
+                    status = "本日已有人值班";
                 } else if ($.inArray(parseInt(title), prev_set_non_duties) > -1) {
-                    status = "Conflict! The staff (" + title + ") should not be on duty!";
+                    status = "人員 " + title + " 本日已設為不可值班！";
                 }
             }
         }
@@ -248,6 +248,20 @@ $(function() {
         }
     });
 
+    function WarningDialog(msg) {
+        BootstrapDialog.show({
+            type: BootstrapDialog.TYPE_WARNING,
+            title: 'Warning',
+            message: msg,
+            buttons: [{
+                label: 'Close',
+                action: function(dialogItself) {
+                    dialogItself.close();
+                }
+            }],
+        });
+    }
+
     //
     // FullCalendar related
     //
@@ -336,7 +350,7 @@ $(function() {
     var calEventDrop = function(event, delta, revertFunc, jsEvent, ui, view) {
         // holiday can not be dragged and dropped. only can be deleted or created.
         if ($.inArray('gcal-holiday', event.className) > -1) {
-            myGrowlUI('Error', 'Holiday cannot be moved!');
+            myGrowlUI('Error', '不可移動假日，請使用刪除功能');
             revertFunc();
         }
 
@@ -706,7 +720,7 @@ $(function() {
     $('#func_edit_duty_patterns').click(function() {
         var patterns = $('#suggested_pattern').data("patterns");
         if (patterns === undefined) {
-            BootstrapDialog.alert('Patterns are undefinde!');
+            WarningDialog('Patterns are undefinde!');
             return;
         }
 
@@ -755,7 +769,7 @@ $(function() {
                         tb_h_count += parseInt(p[2]);
                     });
                     if (tb_o_count != o_count || tb_f_count != f_count || tb_h_count != h_count) {
-                        BootstrapDialog.alert("總班數錯誤，請再檢查");
+                        WarningDialog('總班數錯誤，請再檢查');
                         console.log(table_data);
                         return;
                     }
@@ -896,34 +910,31 @@ $(function() {
         // check if calculated patterns.
         var patterns = $('#suggested_pattern').data("patterns");
         if (patterns === undefined) {
-            BootstrapDialog.show({
-                type: BootstrapDialog.TYPE_WARNING,
-                title: 'Warning',
-                message: 'Please calculate duty patterns first!',
-                buttons: [{
-                    label: 'Close',
-                    action: function(dialogItself) {
-                        dialogItself.close();
-                    }
-                }],
-            });
+            WarningDialog('請先更新排班樣式');
+            return;
+        }
+
+        // check if preset duties exceed qod limit
+        var use_qod_limit = $('#use_qod_limit').is(':checked');
+        var qod_limit = parseInt($('#inputQodLimitSlider').slider('option', 'value'));
+        var presets = get_presets();
+        var groups = calculate_group_duties(presets.duties);
+        if (use_qod_limit) {
+            if (!less_than_qod_times(groups, qod_limit)) {
+                WarningDialog('目前排班已超過 QOD 設定上限，請調整');
+                return;
+            }
+        }
+
+        // check if preset duties has qd duty
+        if (has_continuous_duties(groups)) {
+            WarningDialog('目前排班出現連值狀況，請調整');
             return;
         }
 
         // check if friday, weekend, holiday duties are set and fit pattern.
-        var presets = get_presets();
         if (!is_preset_duties_fit_pattern(presets, patterns)) {
-            BootstrapDialog.show({
-                type: BootstrapDialog.TYPE_WARNING,
-                title: 'Warning',
-                message: 'The preset duties do not fit the patterns. Please adjust them!',
-                buttons: [{
-                    label: 'Close',
-                    action: function(dialogItself) {
-                        dialogItself.close();
-                    }
-                }],
-            });
+            WarningDialog('已排班表不符合樣式，請調整');
             return;
         }
 
@@ -943,8 +954,8 @@ $(function() {
             "patterns": patterns,
             "use_std_dev_level": $('#use_std_dev_level').is(':checked'),
             "std_dev_level": parseFloat($('#inputStdDevSlider').slider('option', 'value')),
-            "use_qod_limit": $('#use_qod_limit').is(':checked'),
-            "qod_limit": parseInt($('#inputQodLimitSlider').slider('option', 'value')),
+            "use_qod_limit": use_qod_limit,
+            "qod_limit": qod_limit,
         };
 
         random_duty_worker = new Worker("assets/js/random_duty_worker.js");
@@ -983,7 +994,7 @@ $(function() {
                     // unblock ui
                     $.unblockUI({
                         onUnblock: function() {
-                            myGrowlUI('Random Duty Completed', 'Have a nice day!');
+                            myGrowlUI('Success', '自動排班已完成');
                         }
                     });
                     break;
@@ -1139,6 +1150,29 @@ $(function() {
         });
     });
 
+    function is_each_day_has_a_duty(start_date, month_span, duties) {
+        var _is_each_day_has_a_duty = true;
+        var end_date = start_date.clone().add(month_span, 'months');
+        var total_days = end_date.diff(start_date, 'days');
+        if (total_days != duties.length) {
+            _is_each_day_has_a_duty = false;
+            console.log(total_days + ' unequal: ' + duties.length);
+        } else {
+            var sorted_duties = duties.sort(function(a, b) {
+                return a[0].localeCompare(b[0])
+            });
+            for (the_date = start_date.clone(), i = 0; the_date < end_date; i++, the_date.add(1, 'day')) {
+                if (sorted_duties[i][0] != the_date.format('YYYY-MM-DD')) {
+                    _is_each_day_has_a_duty = false;
+                    console.log(sorted_duties[i][0] + ' diff: ' + the_date.format());
+                    break;
+                }
+            }
+        }
+
+        return _is_each_day_has_a_duty;
+    }
+
     $('#func_download_excel').click(function(event) {
         // set duration as file name.
         var start_date = $('#cal1').fullCalendar('getDate').startOf('month');
@@ -1151,12 +1185,34 @@ $(function() {
         }
         var excel_path = duration_str + '_duties.xls';
 
-        // write table for downloading
         var duties = get_all_duties();
-        generate_duties_datatable(duties);
 
-        $(this).attr('download', excel_path);
-        ExcellentExport.excel(this, 'duties_datatable', 'duration_str');
+        function export_excel() {
+            // write table for downloading
+            generate_duties_datatable(duties);
+            a = document.createElement("a");
+            a.download = excel_path;
+            ExcellentExport.excel(a, 'duties_datatable', duration_str);
+            a.click();
+        }
+        // check if every date has a duty
+        if (is_each_day_has_a_duty(start_date, month_span, duties)) {
+            export_excel();
+        } else {
+            BootstrapDialog.confirm({
+                title: 'Warning',
+                message: '班表尚未完全設定，確定下載 Excel 檔？',
+                type: BootstrapDialog.TYPE_WARNING,
+                closable: true,
+                btnCancelLabel: '取消',
+                btnOKLabel: '下載',
+                callback: function(result) {
+                    if (result) {
+                        export_excel();
+                    }
+                }
+            });
+        }
     });
 
     //
