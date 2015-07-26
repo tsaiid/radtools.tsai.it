@@ -518,7 +518,7 @@ $(function() {
             }
         });
 
-        var preset_holidays = preset_holidays1.concat(preset_holidays2).map(function(event) {
+        var preset_holidays = $.map(preset_holidays1.concat(preset_holidays2), function(event) {
             return event.start.format("YYYY-MM-DD");
         });
 
