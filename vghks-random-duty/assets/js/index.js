@@ -235,6 +235,7 @@ $(function() {
         resizable: false,
         autoOpen: false,
         width: 400,
+        modal: true,
     });
 
     $('input[name=eventProp]').change(function() {
@@ -1241,4 +1242,9 @@ $(function() {
             clearInterval(check_cal_loaded);
         }
     }, 200);
+
+    // update version text
+    $.get('../../VERSION', function(data){
+        $('#appVersion').html(data);
+    });
 });
