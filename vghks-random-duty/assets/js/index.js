@@ -15,6 +15,9 @@ $(function() {
     //
     var is_cal1_loaded = false;
     var is_cal2_loaded = false; // may only be used in 2-month mode
+    var is_cal1_all_rendered = false;
+    var is_cal2_all_rendered = false;
+    var deleted_holidays = [];  // cache deleted gcal-holiday that will not be rendered again.
 
     $('#mode_switch').bootstrapSwitch({
         onText: "2 月",
@@ -23,14 +26,24 @@ $(function() {
         onSwitchChange: function(event, state) {
             //console.log(state); // true | false
             if (state) { // 2-month mode
+                is_cal2_all_rendered = false;
                 $('.first_cal').toggleClass('col-sm-6', state, 600).promise().done(function() {
                     $('.second_cal').show();
-                    $('#cal2').fullCalendar('render'); // force render the cal, needed for from hidden div
+                    if (!is_cal2_loaded) {
+                        $('#cal2').fullCalendar('render'); // force render the cal, needed for from hidden div
+                    } else {
+                        $('#cal2').fullCalendar('render'); // force render the cal, needed for from hidden div
+                        $('#cal2').fullCalendar('rerenderEvents'); // force re-render cal2, to update suggested patterns
+                    }
                 });
             } else { // 1-month mode
+                is_cal1_all_rendered = false;
                 $('.second_cal').hide();
-                $('.first_cal').toggleClass('col-sm-6', state, 600);
+                $('.first_cal').toggleClass('col-sm-6', state, 600).promise().done(function() {
+                    $('#cal1').fullCalendar('rerenderEvents'); // force re-render cal1, to update suggested patterns
+                });
             }
+            wait_and_update_suggested_patterns();
         }
     });
 
@@ -58,8 +71,7 @@ $(function() {
         value: 4,
         create: update_dialog_title_type,
         change: function() {
-            calculate_suggested_patterns();
-            update_current_duty_status();
+            update_patterns();
             update_dialog_title_type();
         },
     }).slider("pips", {
@@ -180,8 +192,13 @@ $(function() {
                         color = "";
                         eventTitle = '  假日 ' + title; // add two spaces for sort first
                 }
+                // remove event.id already in the cache
+                var event_md5_id = CryptoJS.MD5(date + eventTitle).toString();
+                deleted_holidays = deleted_holidays.filter(function(e){
+                    return e != event_md5_id
+                });
                 var event = {
-                    id: CryptoJS.MD5(date + eventTitle).toString(),
+                    id: event_md5_id,
                     title: eventTitle,
                     start: date,
                     allDay: true,
@@ -194,7 +211,7 @@ $(function() {
                 // Holiday should add a background event
                 if (duty_type == "eventPropHoliday") {
                     var event = {
-                        id: CryptoJS.MD5(date + eventTitle).toString(),
+                        id: event_md5_id,
                         start: date,
                         backgroundColor: holiday_bg_color,
                         rendering: 'background',
@@ -339,6 +356,7 @@ $(function() {
                 $("#cal2").fullCalendar('removeEvents', $('#eventId').val());
                 if (duty_type == 'eventPropHoliday') {
                     calculate_suggested_patterns();
+                    deleted_holidays.push($('#eventId').val());
                 }
                 $(this).dialog("close");
             },
@@ -370,8 +388,13 @@ $(function() {
 
         other_cal.fullCalendar('renderEvent', other_event, true);
     };
-    var onlyTheMonthEventRender = function(event, element, view) {
+    var myEventRender = function(event, element, view) {
+        // show events only in visible areas.
         if (event.start.month() != view.intervalStart.month()) {
+            return false;
+        }
+        // discard deleted gcal-holidays
+        if ($.inArray(event.id, deleted_holidays) > -1) {
             return false;
         }
     };
@@ -405,8 +428,15 @@ $(function() {
         editable: true,
         eventDrop: calEventDrop,
         eventClick: calEventClick,
-        eventRender: onlyTheMonthEventRender,
-        eventAfterAllRender: function() {}
+        eventRender: myEventRender,
+        eventAfterAllRender: function() {
+            //console.log('cal2 eventAfterAllRender');
+            is_cal2_all_rendered = true;
+
+            if (!is_cal2_loaded) {
+                is_cal2_loaded = true;
+            }
+        }
     });
 
     $("#cal1").fullCalendar({
@@ -426,8 +456,11 @@ $(function() {
         editable: true,
         eventDrop: calEventDrop,
         eventClick: calEventClick,
-        eventRender: onlyTheMonthEventRender,
+        eventRender: myEventRender,
         eventAfterAllRender: function() {
+            //console.log("eventAfterAllRender");
+            is_cal1_all_rendered = true;
+
             update_current_duty_status();
             var groups = calculate_group_duties(get_all_duties());
             update_summary_duties(groups);
@@ -438,17 +471,37 @@ $(function() {
         }
     });
 
+    function wait_and_update_suggested_patterns() {
+        var month_span = $('#mode_switch').bootstrapSwitch('state') ? 2 : 1;
+        var check_cal_all_rendered = setInterval(function() {
+            //console.log("200ms passed.");
+            if (month_span == 1 && is_cal1_all_rendered) {
+                //console.log("detect cal1 all rendered.");
+                update_patterns();
+                clearInterval(check_cal_all_rendered);
+            } else if (month_span == 2 && is_cal1_all_rendered && is_cal2_all_rendered) {
+                //console.log("detect cal1 and cal2 all rendered.");
+                update_patterns();
+                clearInterval(check_cal_all_rendered);
+            }
+        }, 200);
+    }
+
     // navigator for next and prev months
     $('#next_month').click(function() {
-        //console.log('prev is clicked, do something');
+        is_cal1_all_rendered = false;
+        is_cal2_all_rendered = false;
         $('#cal1').fullCalendar('next');
         $('#cal2').fullCalendar('next');
+        wait_and_update_suggested_patterns();
     });
 
     $('#prev_month').click(function() {
-        //console.log('next is clicked, do something');
+        is_cal1_all_rendered = false;
+        is_cal2_all_rendered = false;
         $('#cal1').fullCalendar('prev');
         $('#cal2').fullCalendar('prev');
+        wait_and_update_suggested_patterns();
     });
 
     //
@@ -498,10 +551,20 @@ $(function() {
         return preset_duties;
     }
 
+    function get_current_date_range() {
+        // consider month mode
+        var range = {};
+        var month_span = $('#mode_switch').bootstrapSwitch('state') ? 2 : 1;
+        range.start_date = $('#cal1').fullCalendar('getView').intervalStart;
+        range.end_date = range.start_date.clone().add(month_span, 'months');
+        return range;
+    }
+
     function get_all_duties() {
+        var range = get_current_date_range();
         var all_duty_events = $('#cal1').fullCalendar('clientEvents', function(event) {
             if ($.inArray('preset-duty-event', event.className) > -1 || $.inArray('duty-event', event.className) > -1) {
-                return true;
+                return (event.start >= range.start_date && event.start < range.end_date);
             } else {
                 return false;
             }
@@ -714,9 +777,13 @@ $(function() {
         update_duty_patterns(suggested_patterns);
     }
 
-    $('#func_get_holiday_condition').click(function() {
+    function update_patterns() {
         calculate_suggested_patterns();
         update_current_duty_status();
+    }
+
+    $('#func_get_holiday_condition').click(function() {
+        update_patterns();
     });
 
     $('#func_edit_duty_patterns').click(function() {
@@ -815,7 +882,7 @@ $(function() {
 
     function update_summary_duties(groups_duties) {
         if (!$.isEmptyObject(groups_duties)) {
-            var summary_duties_html = '<table class="table table-striped"><tr><th>No.</th><th>Dates</th><th>Intervals</th><th>Std Dev</th></tr>';
+            var summary_duties_html = '<table class="table table-striped"><tr><th>No.</th><th>Dates</th><th>Intervals</th><th>QOD</th><th>Std Dev</th></tr>';
             var preset_holidays = get_preset_holidays();
             for (var p in groups_duties) {
                 var dates = $.map(groups_duties[p].dates.sort(), function(d) {
@@ -829,9 +896,19 @@ $(function() {
                     date_html += '">' + moment(d, "YYYY-MM-DD").format("M/D") + '</span>';
                     return date_html;
                 }).join(', ');
-                var intervals = groups_duties[p].intervals.join(', ');
+                var qod_count = 0;
+                var intervals = $.map(groups_duties[p].intervals, function(i){
+                    var interval_html = '<span class="';
+                    // colerize if qod
+                    if (i == 2) {
+                        interval_html += 'bg-danger';
+                        qod_count++;
+                    }
+                    interval_html += '">' + i + '</span>';
+                    return interval_html;
+                });
                 var std_dev = groups_duties[p].std_dev;
-                summary_duties_html += '<tr><th>' + p + '</th><th>' + dates + '</th><th>' + intervals + '</th><th>' + std_dev + '</th></tr>';
+                summary_duties_html += '<tr><th>' + p + '</th><th>' + dates + '</th><th>' + intervals + '</th><th>' + qod_count + '</th><th>' + std_dev + '</th></tr>';
             }
             summary_duties_html += '</table>';
             $('#summary_duties').html(summary_duties_html);
@@ -1244,7 +1321,7 @@ $(function() {
     }, 200);
 
     // update version text
-    $.get('../../VERSION', function(data){
-        $('#appVersion').html(data);
+    $.getJSON('../../bower.json', function(data) {
+        $('#appVersion').html('v' + data.version);
     });
 });
