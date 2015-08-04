@@ -1,8 +1,3 @@
-// block UI before fullcalendar loads
-$.blockUI({
-    message: '<h2><i class="fa fa-spinner fa-pulse"></i> Loading...</h2>'
-});
-
 $(function() {
     //
     // flags
@@ -421,6 +416,7 @@ $(function() {
         height: 580,
         firstDay: 1,
         theme: true,
+        eventLimit: true,   // strang bug, without this, bottom border disappears in firefox
         googleCalendarApiKey: calGoogleCalendarApiKey,
         eventSources: calEventSources,
         selectable: true,
@@ -449,6 +445,7 @@ $(function() {
         height: 580,
         firstDay: 1,
         theme: true,
+        eventLimit: true,   // strang bug, without this, bottom border disappears in firefox
         googleCalendarApiKey: calGoogleCalendarApiKey,
         eventSources: calEventSources,
         selectable: true,
