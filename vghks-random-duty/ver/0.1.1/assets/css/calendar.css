@@ -3,15 +3,11 @@
 }
 
 #cal_nav {
-   width: 300px;
+   width: 300px;          // your login div width
    position: absolute;
    z-index: 999;
    left: 50%;
    right: 50%;
-   top: -10px;
-   margin-left: -150px;
-}
-
-#calendars {
-    margin: 10px 5px 0 5px;
+   top: 0;
+   margin-left: -150px;   // width/2
 }
