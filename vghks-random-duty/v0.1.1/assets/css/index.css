@@ -1,0 +1,68 @@
+/*
+ * blockUI
+ */
+
+#block_ui_box, #block_ui_dialog {
+    display: none;
+}
+
+div.growlUI {
+    background: url(../img/success48.png) no-repeat 10px 10px;
+}
+div.growlUI.success {
+    background: url(../img/success48.png) no-repeat 10px 10px;
+}
+div.growlUI.warning {
+    background: url(../img/warning48.png) no-repeat 10px 10px;
+}
+div.growlUI.error {
+    background: url(../img/error48.png) no-repeat 10px 10px;
+}
+
+div.growlUI h1,
+div.growlUI h2 {
+    color: white;
+    padding: 6px 5px 5px 75px;
+    text-align: left;
+    margin: 0;
+    line-height: normal;
+}
+
+div.growlUI h1 {
+    font-size: 18px;
+}
+div.growlUI h2 {
+    font-size: 16px;
+}
+
+/*
+ * bootstrap modal related
+ */
+
+#edit_patterns_table td, #edit_patterns_table th {
+    width: 25%;
+}
+
+/* hide div initially */
+#duties_datatable_div, .second_cal, #calEventDialog {
+    display: none;
+}
+
+#appVersion {
+    font-size: small;
+}
+
+/*
+ * PACE related
+ */
+body > :not(.pace),body:before,body:after {
+  -webkit-transition:opacity .4s ease-in-out;
+  -moz-transition:opacity .4s ease-in-out;
+  -o-transition:opacity .4s ease-in-out;
+  -ms-transition:opacity .4s ease-in-out;
+  transition:opacity .4s ease-in-out
+}
+
+body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
+  opacity:0
+}
