@@ -378,6 +378,7 @@ $(function() {
                     calculate_suggested_patterns();
                     deleted_holidays.push($('#eventId').val());
                 }
+                update_current_duty_status();
                 $(this).dialog("close");
             },
             '取消': function() {
@@ -423,9 +424,12 @@ $(function() {
         "#2D6100",
         "#705A00",
         "#943700",
-        "#6E043A",
+        "#FFA000",
         "#20006E",
-        "#20006E",
+        "#AFB42B",
+        "#E64A19",
+        "#2196F3",
+        "#FF4081",
     ];
     var non_duty_color = "#000000";
     var holiday_bg_color = "#f5dfe2";
@@ -493,6 +497,19 @@ $(function() {
         }
     });
 
+    function check_if_already_random() {
+        var range = get_current_date_range();
+        var all_duty_events = $('#cal1').fullCalendar('clientEvents', function(event) {
+            if ($.inArray('duty-event', event.className) > -1) {
+                return (event.start >= range.start_date && event.start < range.end_date);
+            } else {
+                return false;
+            }
+        });
+
+        is_already_random_duty = (all_duty_events.length > 0);
+    }
+
     function wait_and_update_suggested_patterns() {
         var month_span = $('#mode_switch').bootstrapSwitch('state') ? 2 : 1;
         var check_cal_all_rendered = setInterval(function() {
@@ -500,10 +517,12 @@ $(function() {
             if (month_span == 1 && is_cal1_all_rendered) {
                 //console.log("detect cal1 all rendered.");
                 update_patterns();
+                check_if_already_random();
                 clearInterval(check_cal_all_rendered);
             } else if (month_span == 2 && is_cal1_all_rendered && is_cal2_all_rendered) {
                 //console.log("detect cal1 and cal2 all rendered.");
                 update_patterns();
+                check_if_already_random();
                 clearInterval(check_cal_all_rendered);
             }
         }, 200);
@@ -1006,15 +1025,16 @@ $(function() {
 
     function clear_random_duties() {
         // clear fullCalendar
+        var range = get_current_date_range();
         $('#cal1').fullCalendar('removeEvents', function(event) {
-            if ($.inArray('duty-event', event.className) > -1) {
+            if ($.inArray('duty-event', event.className) > -1 && event.start >= range.start_date && event.start < range.end_date) {
                 return true;
             } else {
                 return false;
             }
         });
         $('#cal2').fullCalendar('removeEvents', function(event) {
-            if ($.inArray('duty-event', event.className) > -1) {
+            if ($.inArray('duty-event', event.className) > -1 && event.start >= range.start_date && event.start < range.end_date) {
                 return true;
             } else {
                 return false;
