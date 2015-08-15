@@ -424,12 +424,9 @@ $(function() {
         "#2D6100",
         "#705A00",
         "#943700",
-        "#FFA000",
+        "#6E043A",
         "#20006E",
-        "#AFB42B",
-        "#E64A19",
-        "#2196F3",
-        "#FF4081",
+        "#20006E",
     ];
     var non_duty_color = "#000000";
     var holiday_bg_color = "#f5dfe2";
@@ -1443,7 +1440,7 @@ $(function() {
     }, 200);
 
     // update version text
-    $.getJSON('bower.json', function(data) {
+    $.getJSON('../../bower.json', function(data) {
         $('#appVersion').html('v' + data.version);
     });
 });
