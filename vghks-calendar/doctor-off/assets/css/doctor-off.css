@@ -1,0 +1,86 @@
+body {
+    margin: 0;
+    text-align: center;
+    height: 100%;
+}
+
+/* vertical center hack: http://stackoverflow.com/a/22196760/1576281 */
+html, body {
+  height: 100%;
+}
+.vertical-center {
+  height:100%;
+  width:100%;
+
+  text-align: center;  /* align the inline(-block) elements horizontally */
+  font: 0/0 a;         /* remove the gap between inline(-block) elements */
+}
+
+.vertical-center:before {    /* create a full-height inline block pseudo=element */
+  content: ' ';
+  display: inline-block;
+  vertical-align: middle;  /* vertical alignment of the inline element */
+  height: 100%;
+}
+
+.vertical-center > .container-fluid {
+  max-width: 100%;
+
+  display: inline-block;
+  vertical-align: middle;  /* vertical alignment of the inline element */
+  font: 16px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;        /* <-- reset the font property */
+}
+
+@media (max-width: 768px) {
+  .vertical-center:before {
+    /* height: auto; */
+    display: none;
+  }
+}
+/* vertical center hack: http://stackoverflow.com/a/22196760/1576281 */
+
+#bg {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background: url(../image/chen52.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    opacity: 0.5; filter: alpha(opacity=50);
+}
+#container {
+    display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+#middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+#center {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1180px;
+}
+#title {
+    ms-writing-mode: tb-rl;
+    -webkit-writing-mode: vertical-rl;
+    -moz-writing-mode: vertical-rl;
+    -ms-writing-mode: tb-rl;
+    writing-mode: vertical-rl;
+    -webkit-text-orientation: upright;
+    -moz-text-orientation: upright;
+    -ms-text-orientation: upright;
+    text-orientation: upright;
+    font-size: 3em;
+}
+/* .ui-widget-content { opacity: 0.9; filter: alpha(opacity=90); } */
+span.fc-title { font-size: 16px; }
+
+.no-gutter [class^="col-md"] {
+    padding-left: 0;
+    padding-right: 0;
+}
