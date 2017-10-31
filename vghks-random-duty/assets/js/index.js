@@ -15,6 +15,15 @@ $(function() {
     var deleted_holidays = []; // cache deleted gcal-holiday that will not be rendered again.
     var is_already_random_duty = false; // bool: record if random_duty executed.
 
+    $('#vghks_mode_switch').bootstrapSwitch({
+        onText: "先假日",
+        offText: "一般",
+        offColor: 'info',
+        onSwitchChange: function(event, state) {
+            Cookies.set('vghks_mode_switch', state);
+        }
+    });
+
     $('#mode_switch').bootstrapSwitch({
         onText: "2 月",
         offText: "1 月",
@@ -85,7 +94,7 @@ $(function() {
     //
     // Update Cookie Preferences
     //
-    $('#use_qod_limit').change(function() {
+    $('#use_qod_limit, #use_std_dev_level').change(function() {
         Cookies.set($(this).attr('id'), $(this).is(':checked'));
     });
 
@@ -1066,7 +1075,7 @@ $(function() {
                 }).join(', ');
                 var max_cont_work_interval = Math.max.apply(null, groups_offs[p].intervals) - 1;
                 var max_cont_work_interval_str = '<span class="' + (max_cont_work_interval > 12 ? "bg-danger" : "") + '">' + max_cont_work_interval + '</span>';
-                var std_dev = groups_duties[p].std_dev.toFixed(2);
+                var std_dev = groups_duties[p].std_dev;
                 summary_duties_html += '<tr>' +
                                             '<th>' + p + '</th>' +
                                             '<th>' + dates + '</th>' +
@@ -1083,6 +1092,31 @@ $(function() {
         } else { // if clear, groups_duties is empty
             $('#summary_duties').html("");
         }
+    }
+
+    function is_preset_duties_fit_pattern(presets, patterns) {
+        var groups = calculate_group_duties(presets.duties);
+        //console.log(groups);
+        if (Object.keys(groups).length != patterns.length) {
+            console.log("length not equal. groups: " + Object.keys(groups).length + ", patterns: " + patterns.length);
+            return false;
+        }
+
+        for (var i = 0; i < patterns.length; i++) {
+            var person = i + 1;
+            if (groups[person] === undefined) {
+                return false;
+            }
+            var dates = groups[person].dates;
+            var counted_pattern = count_duty_pattern(dates, presets.holidays);
+            // compare only friday and holiday now
+            if (patterns[i][1] != counted_pattern[1] || patterns[i][2] != counted_pattern[2]) {
+                console.log("person: " + person + ", pattern not fit: " + counted_pattern.join(", "));
+                return false;
+            }
+        }
+
+        return true;
     }
 
     function generate_duties_datatable(duties) {
@@ -1104,12 +1138,12 @@ $(function() {
             if (i > 1) {
                 table_html += '<tr></tr>';
             }
-            table_html += '<tr><td colspan="7">' + month_first_date.format("YYYY / MM") + '</td></tr>';
+            table_html += '<tr><td colspan="7">' + month_first_date.format("YYYY/MM") + '</td></tr>';
 
             while (the_date < end_date) {
                 table_html += '<tr>';
                 for (var j = 0; j < 7; j++, the_cal_date.add(1, 'day')) {
-                    var date_str = the_cal_date.format("MM / DD");
+                    var date_str = the_cal_date.format("MM/DD");
                     table_html += '<th>' + date_str + '</th>';
                 }
                 table_html += '</tr><tr>';
@@ -1123,48 +1157,6 @@ $(function() {
                 }
                 table_html += '</tr>';
             }
-        }
-        // output vghks style
-        table_html += '<tr></tr><tr></tr>'
-        cal_html = ['', ''];
-        duty_html = ['', ''];
-        for (var i = 1; i <= month_span; i++) {
-            var cal = $('#cal' + i);
-            var month_first_date = cal.fullCalendar('getView').intervalStart;
-            var start_date = cal.fullCalendar('getView').start;
-            var end_date = cal.fullCalendar('getView').end;
-            var the_date = month_first_date.clone();
-            var current_month = the_date.month()
-
-            if (i > 1) {
-                table_html += '<tr></tr>';
-            }
-            table_html += '<tr><td colspan="16">' + month_first_date.format("YYYY / MM") + '</td></tr>';
-
-            table_html += '<tr>';
-            for (var j = 0, row = 0; the_date.month() == current_month; j++, the_date.add(1, 'day')) {
-                if (j % 16 == 0 && j > 0) {
-                    cal_html[row] += '</tr><tr>';
-                    duty_html[row] += '</tr><tr>';
-                    row++;
-                }
-
-                var date_str = the_date.format("MM / DD");
-                cal_html[row] += '<th>' + date_str + '</th>';
-
-                date_str = the_date.format("YYYY-MM-DD");
-                var duty = duties_map[date_str];
-                if (duty === undefined) {
-                    duty = "";
-                }
-                duty_html[row] += '<td>' + duty + '</td>';
-            }
-            cal_html[row] += '</tr>';
-            duty_html[row] += '</tr>';
-            for (var row = 0; row < cal_html.length; row++) {
-                table_html += cal_html[row] + duty_html[row];
-            }
-            table_html += '</tr>';
         }
 
         table_html += '</table>';
@@ -1208,6 +1200,7 @@ $(function() {
         var total_days = end_date.diff(start_date, 'days');
         var filters = {
             "patterns": patterns,
+            "use_std_dev_level": $('#use_std_dev_level').is(':checked'),
             "std_dev_level": parseFloat($('#inputStdDevSlider').slider('option', 'value')),
             "use_qod_limit": use_qod_limit,
             "qod_limit": qod_limit,
@@ -1312,6 +1305,16 @@ $(function() {
         if (has_continuous_duties(groups)) {
             WarningDialog('目前排班出現連值狀況，請調整');
             return;
+        }
+
+        // VGHKS vs General mode
+        var vghks_mode = $('#vghks_mode_switch').bootstrapSwitch('state');
+        if (vghks_mode) {
+            // check if friday, weekend, holiday duties are set and fit pattern.
+            if (!is_preset_duties_fit_pattern(presets, patterns)) {
+                WarningDialog('已排班表不符合樣式，請調整');
+                return;
+            }
         }
 
         // check if already random duty and show a confirm dialog
@@ -1518,20 +1521,17 @@ $(function() {
         if (start_month != end_month) {
             duration_str += '-' + end_month;
         }
-        var excel_path = duration_str + '_duties';
+        var excel_path = duration_str + '_duties.xls';
 
         var duties = get_all_duties();
 
         function export_excel() {
             // write table for downloading
             generate_duties_datatable(duties);
-            __html_a__ = document.createElement("a");
-            __html_a__.download = excel_path;
-            ExcellentExport.convert(
-                { anchor: __html_a__, filename: excel_path, format: 'xlsx'},
-                [{name: duration_str, from: {table: 'duties_datatable'}}]
-            );
-            __html_a__.click();
+            a = document.createElement("a");
+            a.download = excel_path;
+            ExcellentExport.excel(a, 'duties_datatable', duration_str);
+            a.click();
         }
         // check if every date has a duty
         if (is_each_day_has_a_duty(start_date, month_span, duties)) {
@@ -1585,6 +1585,7 @@ $(function() {
             $('#use_qod_limit').prop("checked", pref.use_qod_limit);
             if (pref.inputQodLimitSlider !== undefined)
                 $('#inputQodLimitSlider').slider("option", "value", pref.inputQodLimitSlider);
+            $('#use_std_dev_level').prop("checked", pref.use_std_dev_level);
             if (pref.inputStdDevSlider !== undefined)
                 $('#inputStdDevSlider').slider("option", "value", pref.inputStdDevSlider);
             if (pref.inputPeopleSlider !== undefined)
@@ -1595,7 +1596,7 @@ $(function() {
     }, 200);
 
     // update version text
-    $.getJSON('package.json', function(data) {
+    $.getJSON('bower.json', function(data) {
         $('#appVersion').html('v' + data.version);
     });
 
