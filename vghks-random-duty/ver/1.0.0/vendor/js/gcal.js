@@ -1,7 +1,7 @@
 /*!
- * <%= meta.title %> v<%= meta.version %> Google Calendar Plugin
- * Docs & License: <%= meta.homepage %>
- * (c) <%= meta.copyright %>
+ * FullCalendar v3.2.0 Google Calendar Plugin
+ * Docs & License: https://fullcalendar.io/
+ * (c) 2017 Adam Shaw
  */
  
 (function(factory) {
