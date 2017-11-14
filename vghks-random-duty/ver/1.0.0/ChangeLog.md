@@ -1,4 +1,4 @@
-### [1.0.0](/vghks-random-duty/ver/1.0.0/) – 2017-11-13
+### [1.0.0](/vghks-random-duty/ver/1.0.0/) – 2017-11-14
 
 1. Migrate bower to yarn for dependency management.
 2. Remove vghks mode switch and standard dev setting.
