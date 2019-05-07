@@ -34,7 +34,11 @@
     ga('create', 'UA-65868756-1', 'auto');
     ga('send', 'pageview');
   </script>
-</head>
+
+  <!-- Vendors: jquery, bootstrap, clipboard.js -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="shortcut icon" href="/assets/favicon.ico"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"></head>
 
 <body>
 
@@ -74,6 +78,24 @@
                 Lung Cancer
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="ajcc8_esophagus.html">
+                <span data-feather="file-text"></span>
+                Esophageal Cancer
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="ajcc8_colon.html">
+                <span data-feather="file-text"></span>
+                Colorectal Cancer
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="ajcc8_cervix.html">
+                <span data-feather="file-text"></span>
+                Cervical Cancer
+              </a>
+            </li>
           </ul>
 
           <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -93,6 +115,8 @@
         </div>
       </nav>
 
+
+
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
         <div
           class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -100,13 +124,9 @@
 
           <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
-              <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+              <button type="button" id="btn_clear" class="btn btn-sm btn-outline-secondary">Clear</button>
+              <button type="button" id="btn_copy" class="btn btn-sm btn-outline-primary" data-clipboard-target="#result" data-toggle="tooltip" data-original-title="Copied!">Show &amp; Copy</button>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-              <span data-feather="calendar"></span>
-              This week
-            </button>
           </div>
         </div>
 
@@ -484,11 +504,9 @@
                 </div>
 
                 <!-- Report -->
-                <div class="row">
-                  <div class="col-lg-12 well">
-                    <button type="button" id="btn_clear" class="btn btn-info">Clear</button>
-                    <button type="button" id="btn_copy" class="btn btn-primary" data-clipboard-target="#result"
-                      data-toggle="tooltip" data-original-title="Copied!">Copy</button>
+                <div class="row mt-5">
+                  <div class="col">
+                    <h2 class="h5">Report Text</h2>
                     <textarea id="result" class="form-control" rows="15"></textarea>
                   </div>
                 </div>
@@ -497,6 +515,15 @@
       </main>
     </div>
   </div>
+
+  <!-- Vendors: jquery, bootstrap, clipboard.js -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <!-- clipboard.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
 <script type="text/javascript" src="djd_l.js"></script></body>
 
 </html>
