@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Structured report for pancreatic carcinoma staging">
+  <meta name="description" content="Structured report for renal cell carcinoma staging">
   <meta name="author" content="I-Ta Tsai">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>Structure Report for Pancreatic Carcinoma Staging</title>
+  <title>Structure Report for Renal Cell Carcinoma Staging</title>
 
   <!-- For IE 6/7/8 Responsive -->
   <!--[if lt IE 9]>
@@ -173,7 +173,7 @@
 
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h3">Pancreatic Carcinoma Staging Form</h1>
+          <h1 class="h3">Renal Cell Carcinoma Staging Form</h1>
 
           <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
@@ -181,98 +181,29 @@
               <button type="button" id="btn_copy" class="btn btn-sm btn-outline-primary">Show &amp; Copy</button>
             </div>
           </div>
-          <!--
-          <div class="d-flex flex-row justify-content-end mt-5">
-            <a href="" class="btn btn-info w-200 mr-2">Clear</a>
-            <button type="button" id="btn_copy" class="btn btn-primary" data-clipboard-target="#reportModalBody">
-              Show &amp; Copy
-            </button>
-          </div>
-          -->
         </div>
 
         <div class="row">
           <div class="col">
-            <!-- Scanning Protocol -->
-            <h2 class="h4">Scanning Protocol</h2>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="protocol_radios" id="radio_ct" value="ct" checked>
-              <label class="form-check-label" for="radio_ct">
-                CT
-              </label>
-              <form class="form-inline">
-                <div class="form-group mb-2 mr-sm-2">
-                  <div id="ref_rln_num" class="text-muted">
-                    Contrast
-                  </div>
-                </div>
-                <div class="form-check mb-2 mr-sm-2">
-                  <input class="form-check-input cb_sp" type="checkbox" id="cb_sp_ncct" value="ncct" checked>
-                  <label class="form-check-label" for="cb_sp_ncct">without</label>
-                </div>
-                <div class="form-check mb-2 mr-sm-2">
-                  <input class="form-check-input cb_sp" type="checkbox" id="cb_sp_cect" value="cect" checked>
-                  <label class="form-check-label" for="cb_sp_cect">with</label>
-                </div>
-              </form>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="protocol_radios" id="radio_mr" value="mr">
-              <label class="form-check-label" for="radio_mr">
-                MR
-              </label>
-              <form class="form-inline">
-                <div class="form-group mb-2 mr-sm-2">
-                  <div id="ref_rln_num" class="text-muted">
-                    Contrast
-                  </div>
-                </div>
-                <div class="form-check mb-2 mr-sm-2">
-                  <input class="form-check-input cb_sp" type="checkbox" id="cb_sp_ncmr" value="ncmr" checked disabled>
-                  <label class="form-check-label" for="cb_sp_ncmr">without</label>
-                </div>
-                <div class="form-check mb-2 mr-sm-2">
-                  <input class="form-check-input cb_sp" type="checkbox" id="cb_sp_cemr" value="cemr" checked>
-                  <label class="form-check-label" for="cb_sp_cemr">with</label>
-                </div>
-              </form>
-            </div>
-
             <!-- Tumor Location -->
-            <h2 class="h4 mt-4">Tumor Location</h2>
+            <h2 class="h4">Tumor Location</h2>
             <form class="needs-validation" id="form_tumor_location" novalidate>
               <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_tl cb_tl_hn" type="checkbox" id="cb_tl_c" value="pancreatic head and neck">
-                <label class="form-check-label" for="cb_tl_c">Pancreatic head and neck</label>
+                <input class="form-check-input cb_tl" type="checkbox" id="cb_tl_r" value="right kidney">
+                <label class="form-check-label" for="cb_tl_r">Right kidney</label>
               </div>
               <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_tl cb_tl_bt" type="checkbox" id="cb_tl_f" value="pancreatic body">
-                <label class="form-check-label" for="cb_tl_f">Pancreatic body</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_tl cb_tl_bt" type="checkbox" id="cb_tl_lc" value="pancreatic tail">
-                <label class="form-check-label" for="cb_tl_lc">Pancreatic tail</label>
-              </div>
-              <div class="input-group input-group-sm col-10 pl-0 mb-2 mr-sm-2">
-                <div class="input-group-prepend">
-                  <div class="input-group-text">
-                    <input type="checkbox" class="cb_tl" aria-label="Checkbox for other tumor locations"
-                      id="cb_tl_others" value="">
-                  </div>
-                  <span class="input-group-text">Others</span>
-                </div>
-                <input type="text" class="form-control" aria-label="Text input with checkbox for other tumor locations"
-                  id="txt_tl_others">
+                <input class="form-check-input cb_tl" type="checkbox" id="cb_tl_l" value="left kidney">
+                <label class="form-check-label" for="cb_tl_l">Left kidney</label>
               </div>
             </form>
 
             <!-- Tumor Size -->
             <h2 class="h4 mt-4">Tumor Size</h2>
-            <form class="form-inline needs-validation" id="form_tumor_size" novalidate>
-              <div class="input-group input-group-sm col-md-6 pl-0 mb-2 mr-sm-2">
+            <form class="needs-validation form-inline" id="form_tumor_size" novalidate>
+              <div class="input-group input-group-sm mb-2 mr-sm-2">
                 <input type="number" pattern="[0-9]+([\,|\.][0-9]+)?" step="0.1" class="form-control"
-                  aria-label="Greatest diameter of tumor in cm" id="txt_ts_len"
-                  placeholder="Greatest diameter" required>
+                  aria-label="Greatest diameter in cm" id="txt_ts_dia" placeholder="Greatest diameter" required>
                 <div class="input-group-append">
                   <span class="input-group-text">cm</span>
                 </div>
@@ -289,56 +220,87 @@
               </div>
             </form>
 
-            <!-- Tumor Invasion or Encasement -->
-            <h2 class="h4 mt-4">Tumor Invasion or Encasement</h2>
+            <!-- Tumor Invasion -->
+            <h2 class="h4 mt-4">Tumor Invasion</h2>
             <form class="">
               <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti cb_ti_t4" type="checkbox" id="cb_ti_ct" value="celiac trunk">
-                <label class="form-check-label" for="cb_ti_ct">Celiac trunk</label>
+                <input class="form-check-input" type="checkbox" id="cb_ti_na" value="">
+                <label class="form-check-label" for="cb_ti_na">Not assessable</label>
               </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti cb_ti_t4" type="checkbox" id="cb_ti_sma" value="superior mesenteric artery (SMA)">
-                <label class="form-check-label" for="cb_ti_sma">Superior mesenteric artery (SMA)</label>
+            </form>
+            <form class="form-inline ti_item">
+              <div class="form-check mb-2 mr-sm-2">
+                <label class="form-check-label cb_ti_title" for="">Beyond the kidney but not beyond Gerota fascia</label>
               </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti" type="checkbox" id="cb_ti_smv" value="superior mesenteric vein (SMV)">
-                <label class="form-check-label" for="cb_ti_smv">Superior mesenteric vein (SMV)</label>
+              <div class="form-check mb-2 mr-sm-2 ml-4">
+                <input class="form-check-input cb_ti cb_ti_t3a" type="checkbox" id="cb_ti_prf" value="perirenal fat">
+                <label class="form-check-label" for="cb_ti_prf">perirenal fat</label>
               </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti" type="checkbox" id="cb_ti_pv" value="portal vein">
-                <label class="form-check-label" for="cb_ti_pv">Portal vein</label>
+              <div class="form-check mb-2 mr-sm-2">
+                <input class="form-check-input cb_ti cb_ti_t3a" type="checkbox" id="cb_ti_rsf" value="renal sinus fat">
+                <label class="form-check-label" for="cb_ti_rsf">renal sinus fat</label>
               </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti cb_ti_t4" type="checkbox" id="cb_ti_cha" value="common hepatic artery">
-                <label class="form-check-label" for="cb_ti_cha">Common hepatic artery</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti" type="checkbox" id="cb_ti_ivc" value="inferior vena cava">
-                <label class="form-check-label" for="cb_ti_ivc">Inferior vena cava</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti" type="checkbox" id="cb_ti_a" value="aorta">
-                <label class="form-check-label" for="cb_ti_a">Aorta</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti" type="checkbox" id="cb_ti_r" value="rib">
-                <label class="form-check-label" for="cb_ti_r">Rib</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti" type="checkbox" id="cb_ti_vb" value="vertebral body">
-                <label class="form-check-label" for="cb_ti_vb">Vertebral body</label>
-              </div>
-              <div class="input-group input-group-sm col-10 pl-0 mb-2 mr-sm-2">
-                <div class="input-group-prepend">
-                  <div class="input-group-text">
-                    <input type="checkbox" class="cb_ti" aria-label="Checkbox for other tumor invasion"
-                      id="cb_ti_others" value="">
+            </form>
+            <form class="">
+              <fieldset class="form-group">
+                <div class="row">
+                  <legend class="col-form-label col-sm-3 pt-0">Vascular extension</legend>
+                  <div class="col-sm-9">
+                    <div class="form-check">
+                      <input class="form-check-input cb_ti cb_ti_t3a" type="checkbox" id="cb_ti_rv"
+                        value="renal vein or its segmental branches">
+                      <label class="form-check-label" for="cb_ti_rv">renal vein or its segmental branches</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input cb_ti cb_ti_t3bc" type="checkbox" id="cb_ti_ivc"
+                        value="IVC">
+                      <label class="form-check-label" for="cb_ti_ivc">IVC</label>
+                    </div>
+                    <div class="offset-md-1">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="rb_ti_ivc" id="rb_ti_ivc_b"
+                          value="3b">
+                        <label class="form-check-label" for="rb_ti_ivc_b">below the diaphragm</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="rb_ti_ivc" id="rb_ti_ivc_a"
+                          value="3c">
+                        <label class="form-check-label" for="rb_ti_ivc_a">above the diaphragm</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input cb_ti_t3c" type="checkbox" id="cb_ti_ivc_w"
+                          value="the wall of vena cava">
+                        <label class="form-check-label" for="cb_ti_ivc_w">the wall of vena cava</label>
+                      </div>
+                    </div>
                   </div>
-                  <span class="input-group-text">Others</span>
                 </div>
-                <input type="text" class="form-control"
-                  aria-label="Text input with checkbox for other tumor invasion" id="txt_ti_others">
-              </div>
+              </fieldset>
+            </form>
+            <form class="">
+              <fieldset class="form-group">
+                <div class="row">
+                  <legend class="col-form-label col-sm-3 pt-0">Beyond Gerota fascia</legend>
+                  <div class="col-sm-9">
+                    <div class="form-check">
+                      <input class="form-check-input cb_ti cb_ti_t4" type="checkbox" id="cb_ti_iag"
+                        value="ipsilateral adrenal gland">
+                      <label class="form-check-label" for="cb_ti_iag">ipsilateral adrenal gland</label>
+                    </div>
+                    <div class="input-group input-group-sm col-10 pl-0 mt-1 mb-2 mr-sm-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">
+                          <input type="checkbox" class="cb_ti cb_ti_t4" aria-label="Checkbox for other tumor invasion"
+                            id="cb_ti_others" value="">
+                        </div>
+                        <span class="input-group-text">Others</span>
+                      </div>
+                      <input type="text" class="form-control" aria-label="Text input with checkbox for other tumor invasion"
+                        id="txt_ti_others">
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
             </form>
           </div>
 
@@ -346,67 +308,22 @@
           <div class="col">
             <!-- Regional Lymph Node -->
             <h2 class="h4">Regional Lymph Node</h2>
-            <form class="form-inline">
-              <div class="form-group">
-                <div class="input-group input-group-sm mb-2 mr-sm-2">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">Number</span>
-                  </div>
-                  <input type="number" pattern="[0-9]+" step="1" class="form-control"
-                    aria-label="Number of suspicious lymph node" id="txt_rln_num" placeholder="0" value="0">
-                </div>
-              </div>
-              <div class="form-group mb-2 mr-sm-2">
-                <small id="ref_rln_num" class="text-muted">
-                  1-3 (N1), ≥4 (N2)
-                </small>
-              </div>
-            </form>
-            <h3 class="h5 mt-2">Locations: for cancer in the pancreas head and neck</h3>
             <form class="">
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn cb_rn_hn" type="checkbox" id="cb_rn_hn_pa" value="pancreaticoduodenal arcades">
-                <label class="form-check-label" for="cb_rn_hn_pa">Pancreaticoduodenal arcades</label>
+              <div class="form-check mb-2 mr-sm-2">
+                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_rh" value="renal hilar">
+                <label class="form-check-label" for="cb_rn_rh">Renal hilar</label>
               </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn cb_rn_hn" type="checkbox" id="cb_rn_hn_cha" value="common hepatic artery">
-                <label class="form-check-label" for="cb_rn_hn_cha">Common hepatic artery</label>
+              <div class="form-check mb-2 mr-sm-2">
+                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_pc" value="paracaval">
+                <label class="form-check-label" for="cb_rn_pc">Paracaval</label>
               </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn cb_rn_hn" type="checkbox" id="cb_rn_hn_cbd" value="common bile duct">
-                <label class="form-check-label" for="cb_rn_hn_cbd">Common bile duct</label>
+              <div class="form-check mb-2 mr-sm-2">
+                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_ac" value="aortocaval">
+                <label class="form-check-label" for="cb_rn_ac">Aortocaval</label>
               </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn cb_rn_hn" type="checkbox" id="cb_rn_hn_pv" value="portal vein">
-                <label class="form-check-label" for="cb_rn_hn_pv">Portal vein</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn cb_rn_hn" type="checkbox" id="cb_rn_hn_p" value="pyloric">
-                <label class="form-check-label" for="cb_rn_hn_p">Pyloric</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn cb_rn_hn" type="checkbox" id="cb_rn_hn_smv" value="superior mesenteric vein">
-                <label class="form-check-label" for="cb_rn_hn_smv">Superior mesenteric vein</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn cb_rn_hn" type="checkbox" id="cb_rn_hn_sma" value="right lateral wall of the superior mesenteric artery">
-                <label class="form-check-label" for="cb_rn_hn_sma">Right lateral wall of the superior mesenteric artery</label>
-              </div>
-            </form>
-
-            <h3 class="h5 mt-2">Locations: for cancer in the pancreas body and tail</h3>
-            <form class="">
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn cb_rn_bt" type="checkbox" id="cb_rn_bt_cha" value="common hepatic artery">
-                <label class="form-check-label" for="cb_rn_bt_cha">Common hepatic artery</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn cb_rn_bt" type="checkbox" id="cb_rn_bt_ca" value="celiac axis">
-                <label class="form-check-label" for="cb_rn_bt_ca">Celiac axis</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn cb_rn_bt" type="checkbox" id="cb_rn_bt_sa" value="splenic artery">
-                <label class="form-check-label" for="cb_rn_bt_sa">Splenic artery</label>
+              <div class="form-check mb-2 mr-sm-2">
+                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_pa" value="paraaortic">
+                <label class="form-check-label" for="cb_rn_pa">Paraaortic</label>
               </div>
             </form>
 
@@ -414,25 +331,25 @@
             <h2 class="h4 mt-4">Distant Metastasis</h2>
             <form class="">
               <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_dm cb_dm_m1ab" type="checkbox" id="cb_dm_li" value="liver">
+                <input class="form-check-input cb_dm cb_dm_m1c" type="checkbox" id="cb_dm_li" value="liver">
                 <label class="form-check-label" for="cb_dm_li">Liver</label>
               </div>
               <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_dm cb_dm_m1ab" type="checkbox" id="cb_dm_ad" value="adrenal">
+                <input class="form-check-input cb_dm cb_dm_m1c" type="checkbox" id="cb_dm_ad" value="adrenal">
                 <label class="form-check-label" for="cb_dm_ad">Adrenal</label>
               </div>
               <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_dm cb_dm_m1ab" type="checkbox" id="cb_dm_lu" value="lung">
+                <input class="form-check-input cb_dm cb_dm_m1c" type="checkbox" id="cb_dm_lu" value="lung">
                 <label class="form-check-label" for="cb_dm_lu">Lung</label>
               </div>
               <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_dm cb_dm_m1ab" type="checkbox" id="cb_dm_b" value="bone">
+                <input class="form-check-input cb_dm cb_dm_m1b" type="checkbox" id="cb_dm_b" value="bone">
                 <label class="form-check-label" for="cb_dm_b">Bone</label>
               </div>
               <div class="input-group input-group-sm col-10 pl-0 mb-2 mr-sm-2">
                 <div class="input-group-prepend">
                   <div class="input-group-text">
-                    <input type="checkbox" class="cb_dm cb_dm_m1ab" aria-label="Checkbox for other distant metastasis"
+                    <input type="checkbox" class="cb_dm cb_dm_m1c" aria-label="Checkbox for other distant metastasis"
                       id="cb_dm_others" value="">
                   </div>
                   <span class="input-group-text">Others</span>
@@ -442,6 +359,46 @@
               </div>
             </form>
 
+            <!-- Scanning Protocol -->
+            <h2 class="h4 mt-4">Scanning Protocol</h2>
+            <form class="">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="protocol_radios" id="radio_ct" value="ct" checked>
+                <label class="form-check-label" for="radio_ct">
+                  CT
+                </label>
+                <div class="row">
+                  <div class="col-auto ml-2 mt-2">
+                    <div class="form-check form-check-inline mb-2 mr-sm-2">
+                      <input class="form-check-input cb_sp" type="checkbox" id="cb_sp_ncct" value="ncct" checked>
+                      <label class="form-check-label" for="cb_sp_ncct">without contrast</label>
+                    </div>
+                    <div class="form-check form-check-inline mb-2 mr-sm-2">
+                      <input class="form-check-input cb_sp" type="checkbox" id="cb_sp_cect" value="cect" checked>
+                      <label class="form-check-label" for="cb_sp_cect">with contrast</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="protocol_radios" id="radio_mr" value="mr">
+                <label class="form-check-label" for="radio_mr">
+                  MR
+                </label>
+                <div class="row">
+                  <div class="col-auto ml-2 mt-2">
+                    <div class="form-check form-check-inline mb-2 mr-sm-2">
+                      <input class="form-check-input cb_sp" type="checkbox" id="cb_sp_ncmr" value="ncmr" checked disabled>
+                      <label class="form-check-label" for="cb_sp_ncmr">without contrast</label>
+                    </div>
+                    <div class="form-check form-check-inline mb-2 mr-sm-2">
+                      <input class="form-check-input cb_sp" type="checkbox" id="cb_sp_cemr" value="cemr" checked>
+                      <label class="form-check-label" for="cb_sp_cemr">with contrast</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </main>
@@ -514,7 +471,7 @@
 
     <!-- clipboard.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
-<script type="text/javascript" src="ajcc8_pancreas.js"></script></body>
+<script type="text/javascript" src="ajcc8_rcc.js"></script></body>
 
 </html>
 
