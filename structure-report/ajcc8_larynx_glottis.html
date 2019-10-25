@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Structured report for laryngeal cancer (supraglottis) staging">
+  <meta name="description" content="Structured report for laryngeal cancer (glottis) staging">
   <meta name="author" content="I-Ta Tsai">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>Structure Report for Laryngeal Cancer (Supraglottis) Staging</title>
+  <title>Structure Report for Laryngeal Cancer (Glottis) Staging</title>
 
   <!-- For IE 6/7/8 Responsive -->
   <!--[if lt IE 9]>
@@ -203,7 +203,7 @@
 
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h3">Laryngeal Cancer (Supraglottis) Staging Form</h1>
+          <h1 class="h3">Laryngeal Cancer (Glottis) Staging Form</h1>
 
           <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
@@ -274,24 +274,16 @@
             </form>
             <form class="form-inline">
               <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_tl" type="checkbox" id="cb_tl_she" value="suprahyoid epiglottis">
-                <label class="form-check-label" for="cb_tl_she">Suprahyoid epiglottis</label>
+                <input class="form-check-input cb_tl" type="checkbox" id="cb_tl_vc" value="vocal cords">
+                <label class="form-check-label" for="cb_tl_vc">Vocal cords</label>
               </div>
               <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_tl" type="checkbox" id="cb_tl_aef" value="aryepiglottic fold">
-                <label class="form-check-label" for="cb_tl_aef">Aryepiglottic fold</label>
+                <input class="form-check-input cb_tl" type="checkbox" id="cb_tl_ac" value="anterior commissure">
+                <label class="form-check-label" for="cb_tl_ac">Anterior commissure</label>
               </div>
               <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_tl" type="checkbox" id="cb_tl_la" value="laryngeal aspect">
-                <label class="form-check-label" for="cb_tl_la">Laryngeal aspect</label>
-              </div>
-              <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_tl" type="checkbox" id="cb_tl_ihe" value="infrahyoid epiglottis">
-                <label class="form-check-label" for="cb_tl_ihe">Infrahyoid epiglottis</label>
-              </div>
-              <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_tl" type="checkbox" id="cb_tl_vbfc" value="ventricular bands or false cords">
-                <label class="form-check-label" for="cb_tl_vbfc">Ventricular bands or false cords</label>
+                <input class="form-check-input cb_tl" type="checkbox" id="cb_tl_pc" value="posterior commissure">
+                <label class="form-check-label" for="cb_tl_pc">Posterior commissure</label>
               </div>
             </form>
             <form class="needs-validation" id="" novalidate>
@@ -315,20 +307,16 @@
                 <label class="form-check-label" for="">T2</label>
               </div>
               <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti cb_ti_t2" type="checkbox" id="cb_ti_glo" value="through cortical bone">
-                <label class="form-check-label" for="cb_ti_glo">glottis</label>
+                <input class="form-check-input cb_ti cb_ti_t2" type="checkbox" id="cb_ti_spg" value="supraglottis">
+                <label class="form-check-label" for="cb_ti_spg">Supraglottis</label>
               </div>
               <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti cb_ti_t2" type="checkbox" id="cb_ti_mbt" value="through cortical bone">
-                <label class="form-check-label" for="cb_ti_mbt">mucosa of base of tongue</label>
+                <input class="form-check-input cb_ti cb_ti_t2" type="checkbox" id="cb_ti_sbg" value="subglottis">
+                <label class="form-check-label" for="cb_ti_sbg">Subglottis</label>
               </div>
               <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti cb_ti_t2" type="checkbox" id="cb_ti_val" value="through cortical bone">
-                <label class="form-check-label" for="cb_ti_val">vallecula</label>
-              </div>
-              <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti cb_ti_t2" type="checkbox" id="cb_ti_mwps" value="through cortical bone">
-                <label class="form-check-label" for="cb_ti_mwps">medial wall of pyriform sinus</label>
+                <input class="form-check-input cb_ti cb_ti_t2" type="checkbox" id="cb_ti_ivom" value="impaired vocal cord mobility">
+                <label class="form-check-label" for="cb_ti_ivom">Impaired vocal cord mobility</label>
               </div>
             </form>
             <form class="form-inline">
@@ -338,14 +326,6 @@
               <div class="form-check mb-2 mr-sm-2">
                 <input class="form-check-input cb_ti cb_ti_t3" type="checkbox" id="cb_ti_vcf" value="vocal cord fixation">
                 <label class="form-check-label" for="cb_ti_vcf">Vocal cord fixation</label>
-              </div>
-              <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti cb_ti_t3" type="checkbox" id="cb_ti_pca" value="postcricoid area">
-                <label class="form-check-label" for="cb_ti_pca">Postcricoid area</label>
-              </div>
-              <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_ti cb_ti_t3" type="checkbox" id="cb_ti_pes" value="pre-epiglottic space">
-                <label class="form-check-label" for="cb_ti_pes">Pre-epiglottic space</label>
               </div>
               <div class="form-check mb-2 mr-sm-2">
                 <input class="form-check-input cb_ti cb_ti_t3" type="checkbox" id="cb_ti_pgs" value="paraglottic space">
@@ -696,7 +676,7 @@
 
     <!-- clipboard.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
-<script type="text/javascript" src="ajcc8_larynx_supraglottis.js"></script></body>
+<script type="text/javascript" src="ajcc8_larynx_glottis.js"></script></body>
 
 </html>
 
