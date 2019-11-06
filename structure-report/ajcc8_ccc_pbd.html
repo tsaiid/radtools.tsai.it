@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Structured report for hepatocellular carcinoma staging">
+  <meta name="description" content="Structured report for cholangiocarcinoma: perihilar bile duct staging">
   <meta name="author" content="I-Ta Tsai">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>Structure Report for Hepatocellular Carcinoma Staging</title>
+  <title>Structure Report for Cholangiocarcinoma: Perihilar Bile Duct Staging</title>
 
   <!-- For IE 6/7/8 Responsive -->
   <!--[if lt IE 9]>
@@ -227,7 +227,7 @@
 
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h3">Hepatocellular Carcinoma Staging Form</h1>
+          <h1 class="h3">Cholangiocarcinoma: Perihilar Bile Duct Staging Form</h1>
 
           <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
@@ -247,27 +247,8 @@
 
         <div class="row">
           <div class="col">
-            <!-- Tumor Location -->
-            <h2 class="h4">Tumor Location</h2>
-            <form class="needs-validation" id="form_tumor_location" novalidate>
-              <div class="input-group input-group-sm col-10 pl-0 mb-2 mr-sm-2">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">Number</span>
-                </div>
-                <input type="text" class="form-control"
-                  aria-label="Text input for tumor numbers" id="txt_tl_num" placeholder="1,2,3 or multiple">
-              </div>
-              <div class="input-group input-group-sm col-10 pl-0 mb-2 mr-sm-2">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">Location</span>
-                </div>
-                <input type="text" class="form-control"
-                  aria-label="Text input for tumor locations" id="txt_tl_loc" placeholder="segment or lobe">
-              </div>
-            </form>
-
             <!-- Tumor Size -->
-            <h2 class="h4 mt-4">Tumor Size</h2>
+            <h2 class="h4">Tumor Size</h2>
             <form class="form-inline needs-validation" id="form_tumor_size" novalidate>
               <div class="input-group input-group-sm col-md-6 pl-0 mb-2 mr-sm-2">
                 <input type="number" pattern="[0-9]+([\,|\.][0-9]+)?" step="0.1" class="form-control"
@@ -289,81 +270,67 @@
               </div>
             </form>
 
-            <!-- Tumor Characteristics and Associated Liver Features -->
-            <h2 class="h4 mt-4">Tumor Characteristics and Associated Liver Features</h2>
-            <form class="">
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_tc" type="checkbox" id="cb_tc_a" value="ascites">
-                <label class="form-check-label" for="cb_tc_a">Ascites</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_tc" type="checkbox" id="cb_tc_smg" value="splenomegaly">
-                <label class="form-check-label" for="cb_tc_smg">Splenomegaly</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_tc" type="checkbox" id="cb_tc_c" value="cirrhosis">
-                <label class="form-check-label" for="cb_tc_c">Cirrhosis</label>
-              </div>
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_tc" type="checkbox" id="cb_tc_fl" value="fatty liver">
-                <label class="form-check-label" for="cb_tc_fl">Fatty liver</label>
-              </div>
-            </form>
-            <form class="">
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_tc" type="checkbox" id="cb_tc_tep" value="typical enhancement pattern (hypervascular enhancement and early wash-out)">
-                <label class="form-check-label" for="cb_tc_tep">Typical enhancement pattern (hypervascular enhancement and early wash-out)</label>
-              </div>
-            </form>
-            <form class="">
-              <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_tc" type="checkbox" id="cb_tc_pcv" value="portosystemic collateral vessels">
-                <label class="form-check-label" for="cb_tc_pcv">Portosystemic collateral vessels</label>
-              </div>
-            </form>
-            <form class="form-inline needs-validation" id="" novalidate>
+            <!-- Tumor Location -->
+            <h2 class="h4 mt-4">Tumor Location</h2>
+            <form class="form-inline">
               <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_tc cb_tc_t4 cb_tc_pvt" type="checkbox" id="cb_tc_pvt" value="portal vein thrombosis">
-                <label class="form-check-label" for="cb_tc_pvt">Portal vein thrombosis</label>
+                <label class="form-check-label" for="">Location: </label>
               </div>
-              <div class="input-group input-group-sm col-md-6 pl-0 mb-2 mr-sm-2">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">Location</span>
-                </div>
-                <input type="text" class="form-control"
-                  aria-label="Text input for portal vein thrombosis location" id="txt_tc_pvt">
+              <div class="form-check mb-2 mr-sm-2">
+                <input class="form-check-input radio_tl" type="radio" id="radio_tl_r" name="radio_tl" value="right">
+                <label class="form-check-label" for="radio_tl_r">Right</label>
+              </div>
+              <div class="form-check mb-2 mr-sm-2">
+                <input class="form-check-input radio_tl" type="radio" id="radio_tl_l" name="radio_tl" value="left">
+                <label class="form-check-label" for="radio_tl_l">Left</label>
+              </div>
+              <div class="form-check mb-2 mr-sm-2">
+                <input class="form-check-input radio_tl" type="radio" id="radio_tl_b" name="radio_tl" value="CHD bifurcation" checked>
+                <label class="form-check-label" for="radio_tl_b">CHD bifurcation</label>
               </div>
             </form>
-            <form class="form-inline needs-validation" id="" novalidate>
-              <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_tc cb_tc_t4" type="checkbox" id="cb_tc_hvi" value="hepatic vein invasion">
-                <label class="form-check-label" for="cb_tc_hvi">Hepatic vein invasion</label>
-              </div>
-              <div class="input-group input-group-sm col-md-6 pl-0 mb-2 mr-sm-2">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">Location</span>
-                </div>
-                <input type="text" class="form-control"
-                  aria-label="Text input for hepatic vein invasion location" id="txt_tc_hvi">
+
+            <!-- Tumor Invasion -->
+            <h2 class="h4 mt-4">Tumor Invasion</h2>
+            <form class="">
+              <div class="form-check form-check-inline mb-2 mr-sm-2">
+                <input class="form-check-input cb_ti cb_ti_t1" type="checkbox" id="cb_ti_t1" value="Tumor confines in the bile duct (T1)" checked>
+                <label class="form-check-label" for="cb_ti_t1">Tumor confines in the bile duct (T1)</label>
               </div>
             </form>
             <form class="">
               <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_tc cb_tc_t4" type="checkbox" id="cb_tc_pvp" value="perforation of visceral peritoneum">
-                <label class="form-check-label" for="cb_tc_pvp">Perforation of visceral peritoneum</label>
+                <input class="form-check-input cb_ti cb_ti_t2a" type="checkbox" id="cb_ti_t2a" value="Tumor invades beyond the wall of the bile duct to surrounding adipose tissue (T2a)">
+                <label class="form-check-label" for="cb_ti_t2a">Tumor invades beyond the wall of the bile duct to surrounding adipose tissue (T2a)</label>
               </div>
             </form>
-            <form class="form-inline needs-validation" id="" novalidate>
-              <div class="form-check mb-2 mr-sm-2">
-                <input class="form-check-input cb_tc cb_tc_t4" type="checkbox" id="cb_tc_iao" value="invasion of adjacent organs">
-                <label class="form-check-label" for="cb_tc_iao">Invasion of adjacent organs</label>
+            <form class="">
+              <div class="form-check form-check-inline mb-2 mr-sm-2">
+                <input class="form-check-input cb_ti cb_ti_t2b" type="checkbox" id="cb_ti_t2b" value="Tumor invades adjacent hepatic parenchyma (T2b)">
+                <label class="form-check-label" for="cb_ti_t2b">Tumor invades adjacent hepatic parenchyma (T2b)</label>
               </div>
-              <div class="input-group input-group-sm col-md-6 pl-0 mb-2 mr-sm-2">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">Location</span>
-                </div>
-                <input type="text" class="form-control"
-                  aria-label="Text input for invasion of adjacent organs" id="txt_tc_iao">
+            </form>
+            <form class="">
+              <div class="form-check form-check-inline mb-2 mr-sm-2">
+                <input class="form-check-input cb_ti cb_ti_t3" type="checkbox" id="cb_ti_t3" value="Unilateral branches of the portal vein or hepatic artery (T3)">
+                <label class="form-check-label" for="cb_ti_t3">Unilateral branches of the portal vein or hepatic artery (T3)</label>
+              </div>
+            </form>
+            <form class="" id="">
+              <div class="form-check mb-2 mr-sm-2">
+                <label class="form-check-label" for="">Tumor invades the following structures, including: (T4)</label>
+              </div>
+              <div class="form-check mb-2 mr-sm-2">
+                <input class="form-check-input cb_ti cb_ti_t4" type="checkbox" id="cb_ti_t4_mpv" value="Main portal vein or portal branches bilaterally (T4)">
+                <label class="form-check-label" for="cb_ti_t4_mpv">Main portal vein or portal branches bilaterally</label>
+              </div>
+              <div class="form-check mb-2 mr-sm-2">
+                <input class="form-check-input cb_ti cb_ti_t4" type="checkbox" id="cb_ti_t4_cha" value="Common hepatic artery (T4)">
+                <label class="form-check-label" for="cb_ti_t4_cha">Common hepatic artery</label>
+              </div>
+              <div class="form-check mb-2 mr-sm-2">
+                <input class="form-check-input cb_ti cb_ti_t4" type="checkbox" id="cb_ti_t4_u2bd" value="Unilateral 2nd-order branch bile duct and contralateral portal vein or hepatic artery (T4)">
+                <label class="form-check-label" for="cb_ti_t4_u2bd">Unilateral 2nd-order branch bile duct and contralateral portal vein or hepatic artery</label>
               </div>
             </form>
           </div>
@@ -372,34 +339,47 @@
           <div class="col">
             <!-- Regional Lymph Node -->
             <h2 class="h4">Regional Lymph Node</h2>
+            <form class="form-inline">
+              <div class="form-group">
+                <div class="input-group input-group-sm mb-2 mr-sm-2">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Number</span>
+                  </div>
+                  <input type="number" pattern="[0-9]+" step="1" class="form-control"
+                    aria-label="Number of suspicious lymph node" id="txt_rln_num" placeholder="0" value="0">
+                </div>
+              </div>
+              <div class="form-group mb-2 mr-sm-2">
+                <small id="ref_rln_num" class="text-muted">
+                  1-3 (N1), ≥4 (N2)
+                </small>
+              </div>
+            </form>
             <h3 class="h5 mt-2">Locations</h3>
             <form class="">
               <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_hh" value="hepatic hilum">
-                <label class="form-check-label" for="cb_rn_hh">Hepatic hilum</label>
+                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_h" value="hilar">
+                <label class="form-check-label" for="cb_rn_h">Hilar</label>
               </div>
               <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_hl" value="hepatoduodenal ligament">
-                <label class="form-check-label" for="cb_rn_hl">Hepatoduodenal ligament</label>
+                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_cd" value="cystic duct">
+                <label class="form-check-label" for="cb_rn_cd">Cystic duct</label>
               </div>
               <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_ip" value="inferior phrenic">
-                <label class="form-check-label" for="cb_rn_ip">Inferior phrenic</label>
+                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_cbd" value="common bile duct">
+                <label class="form-check-label" for="cb_rn_cbd">Common bile duct</label>
               </div>
               <div class="form-check form-check-inline mb-2 mr-sm-2">
-                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_c" value="caval">
-                <label class="form-check-label" for="cb_rn_c">Caval</label>
+                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_ha" value="hepatic artery">
+                <label class="form-check-label" for="cb_rn_ha">Hepatic artery</label>
               </div>
-              <div class="input-group input-group-sm col-10 pl-0 mb-2 mr-sm-2">
-                <div class="input-group-prepend">
-                  <div class="input-group-text">
-                    <input type="checkbox" class="cb_rn" aria-label="Checkbox for other regional lymphadenopathy"
-                      id="cb_rn_others" value="">
-                  </div>
-                  <span class="input-group-text">Others</span>
-                </div>
-                <input type="text" class="form-control"
-                  aria-label="Text input with checkbox for other regional lymphadenopathy" id="txt_rn_others">
+              <div class="form-check form-check-inline mb-2 mr-sm-2">
+                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_ppd" value="posterior pancreaticoduodenal">
+                <label class="form-check-label" for="cb_rn_ppd">Posterior pancreaticoduodenal</label>
+              </div>
+              <div class="form-check form-check-inline mb-2 mr-sm-2">
+                <input class="form-check-input cb_rn" type="checkbox" id="cb_rn_pv" value="portal vein">
+                <label class="form-check-label" for="cb_rn_pv">Portal vein</label>
               </div>
             </form>
 
@@ -547,7 +527,7 @@
 
     <!-- clipboard.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
-<script type="text/javascript" src="ajcc8_hcc.js"></script></body>
+<script type="text/javascript" src="ajcc8_ccc_pbd.js"></script></body>
 
 </html>
 
