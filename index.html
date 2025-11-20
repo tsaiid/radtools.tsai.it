@@ -3,256 +3,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RadTools | 放射科醫師實用工具集</title>
-    <meta name="description" content="Dr. Tsai 的放射科臨床實用工具集：骨齡圖譜、AJCC 癌症分期、Lung-RADS 報告與值班表產生器。">
-    
+    <title>RadTools | Clinical Radiology Utilities</title>
+    <meta name="description" content="Dr. Tsai 的放射科臨床實用工具集：Bone Age, AJCC, Lung-RADS, Duty Roster。">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Noto+Sans+TC:wght@300;400;500&family=Noto+Serif+TC:wght@500;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* 日系配色 (Japanese Color Palette) */
-            --bg-color: #f4f6f8; /* 淺雲灰 */
-            --card-bg: #ffffff;
-            --text-main: #2c3e50; /* 鐵黑 */
-            --text-sub: #7f8c8d; /* 錫色 */
-            --accent-color: #607d8b; /* 藍鼠色 (Medical/Calm Blue) */
-            --hover-shadow: 0 10px 25px rgba(100, 110, 120, 0.1);
-            --border-radius: 8px;
+            /* 升級版配色：更加深邃沈穩 */
+            --bg-color: #f3f4f6;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --text-primary: #1a202c;
+            --text-secondary: #64748b;
+            --accent-color: #3b82f6; /* 科技藍 */
+            --accent-hover: #2563eb;
+            --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+            --card-hover-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.15);
+            --noise-url: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjY2MiIG9wYWNpdHk9IjAuMiIvPgo8L3N2Zz4=');
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Noto Sans TC', sans-serif;
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 2rem 1rem;
-        }
-
-        /* 排版容器 */
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-            width: 100%;
-            flex: 1;
             display: flex;
-            flex-direction: column;
             justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            /* 背景細節：噪點紋理 + 漸層光暈 */
+            background-image: var(--noise-url), 
+                              radial-gradient(circle at 10% 20%, rgba(219, 234, 254, 0.8) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(224, 231, 255, 0.8) 0%, transparent 40%);
+            background-attachment: fixed;
         }
 
-        /* 標題區塊 */
-        header {
-            text-align: center;
-            margin-bottom: 3.5rem;
+        /* 主佈局：採用左右分割或置中卡片堆疊 */
+        .main-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1.4fr; /* 左側品牌 1 : 右側工具 1.4 */
+            gap: 4rem;
+            align-items: center;
+        }
+
+        /* 左側品牌區 */
+        .brand-section {
+            padding: 2rem;
+            animation: fadeInMove 0.8s ease-out forwards;
+        }
+
+        .brand-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
         }
 
         h1 {
             font-family: 'Noto Serif TC', serif;
-            font-size: 2.2rem;
+            font-size: 3.5rem;
+            line-height: 1.1;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
             font-weight: 700;
-            letter-spacing: 0.1em;
-            color: var(--text-main);
-            margin-bottom: 0.5rem;
+        }
+        
+        h1 span {
+            display: block;
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
         }
 
-        .subtitle {
-            font-size: 0.95rem;
-            color: var(--text-sub);
-            letter-spacing: 0.05em;
-            font-weight: 300;
+        .brand-desc {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 90%;
         }
 
-        /* 分隔線 */
-        .divider {
-            width: 40px;
-            height: 2px;
-            background-color: var(--accent-color);
-            margin: 1.5rem auto 0;
-            opacity: 0.6;
-        }
-
-        /* 卡片網格系統 */
-        .grid {
+        /* 右側工具網格 */
+        .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
-            padding: 0 1rem;
         }
 
-        /* 卡片設計 */
-        .card {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: var(--border-radius);
+        /* 工具卡片設計 */
+        .tool-card {
+            position: relative;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 1.8rem;
             text-decoration: none;
-            color: var(--text-main);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0,0,0,0.03);
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: var(--card-shadow);
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 0%;
-            background-color: var(--accent-color);
-            transition: height 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--hover-shadow);
-            border-color: transparent;
-        }
-
-        .card:hover::before {
+            justify-content: space-between;
             height: 100%;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0; /* Animation start state */
         }
 
-        /* Icon 樣式 */
-        .icon-box {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 1.2rem;
+        /* 讓卡片依序進場 */
+        .tool-card:nth-child(1) { animation-delay: 0.1s; }
+        .tool-card:nth-child(2) { animation-delay: 0.2s; }
+        .tool-card:nth-child(3) { animation-delay: 0.3s; }
+        .tool-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .tool-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: var(--card-hover-shadow);
+            border-color: rgba(255, 255, 255, 1);
+        }
+
+        /* 卡片內圖示容器 */
+        .icon-wrapper {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .tool-card:hover .icon-wrapper {
+            transform: rotate(-5deg) scale(1.1);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .tool-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .tool-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .arrow-icon {
+            position: absolute;
+            bottom: 1.8rem;
+            right: 1.8rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
             color: var(--accent-color);
         }
 
-        .icon-box svg {
-            width: 100%;
-            height: 100%;
-            stroke-width: 1.5;
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            letter-spacing: 0.02em;
-        }
-
-        .card-desc {
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            line-height: 1.5;
-            font-weight: 300;
+        .tool-card:hover .arrow-icon {
+            opacity: 1;
+            transform: translateX(0);
         }
 
         /* 頁尾 */
-        footer {
+        .footer {
+            position: absolute;
+            bottom: 1rem;
+            width: 100%;
             text-align: center;
-            margin-top: 4rem;
             font-size: 0.8rem;
-            color: #95a5a6;
-            font-family: 'Noto Serif TC', serif;
+            color: #94a3b8;
+            font-family: 'Inter', sans-serif;
         }
 
-        footer a {
-            color: #95a5a6;
-            text-decoration: none;
-            border-bottom: 1px dotted #bdc3c7;
-            transition: color 0.2s;
+        /* 手機版 RWD */
+        @media (max-width: 968px) {
+            .main-wrapper {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 1.5rem;
+                align-items: start;
+            }
+            
+            .brand-section {
+                text-align: center;
+                padding: 0;
+            }
+
+            .brand-desc {
+                margin: 0 auto;
+            }
+
+            h1 { font-size: 2.5rem; }
+            h1 span { font-size: 1.5rem; }
+            
+            .footer { position: relative; margin-top: 3rem; }
         }
 
-        footer a:hover {
-            color: var(--accent-color);
-            border-bottom-style: solid;
+        /* 動畫 Keyframes */
+        @keyframes fadeInMove {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        /* 針對手機的微調 */
-        @media (max-width: 600px) {
-            h1 { font-size: 1.8rem; }
-            .grid { grid-template-columns: 1fr; }
-            .container { justify-content: flex-start; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>RadTools</h1>
-            <div class="subtitle">Clinical Radiology Utilities</div>
-            <div class="divider"></div>
-        </header>
+    <div class="main-wrapper">
+        
+        <section class="brand-section">
+            <span class="brand-label">Radiology Tools</span>
+            <h1>RadTools <span>Dr. Tsai's Utilities</span></h1>
+            <p class="brand-desc">
+                匯集放射科臨床工作所需的數位工具。從骨齡判讀、腫瘤分期到報告結構化與自動排班，致力於提升醫療決策的精準度與效率。
+            </p>
+        </section>
 
-        <div class="grid">
-            <a href="https://radtools.tsai.it/bone-age/" class="card">
-                <div class="icon-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
-                    </svg>
+        <section class="tools-grid">
+            
+            <a href="https://radtools.tsai.it/bone-age/" class="tool-card">
+                <div class="icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 </div>
-                <div class="card-title">Bone Age Atlas</div>
-                <div class="card-desc">
-                    骨齡參考圖譜。快速對照 Greulich & Pyle 標準，輔助兒科影像判讀。
+                <h3>Bone Age Atlas</h3>
+                <p>Greulich & Pyle 骨齡參考圖譜，兒科影像判讀輔助。</p>
+                <div class="arrow-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </div>
             </a>
 
-            <a href="https://radtools.tsai.it/structure-report/ajcc/" class="card">
-                <div class="icon-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
+            <a href="https://radtools.tsai.it/structure-report/ajcc/" class="tool-card">
+                <div class="icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                 </div>
-                <div class="card-title">AJCC Staging Generator</div>
-                <div class="card-desc">
-                    癌症分期報告產生器。依據最新 AJCC 指引，協助快速生成結構化報告。
+                <h3>AJCC Staging</h3>
+                <p>最新版癌症分期報告產生器，快速生成結構化病歷。</p>
+                <div class="arrow-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </div>
             </a>
 
-            <a href="https://radtools.tsai.it/structure-report/nhi-lung-rads/" class="card">
-                <div class="icon-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                    </svg>
+            <a href="https://radtools.tsai.it/structure-report/nhi-lung-rads/" class="tool-card">
+                <div class="icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
                 </div>
-                <div class="card-title">NHI Lung-RADS Report</div>
-                <div class="card-desc">
-                    國健署肺癌篩檢報告。符合 LDCT 篩檢標準格式，自動計算 Lung-RADS 分類。
+                <h3>Lung-RADS Report</h3>
+                <p>國健署 LDCT 肺癌篩檢專用，自動計算風險分類。</p>
+                <div class="arrow-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </div>
             </a>
 
-            <a href="https://radtools.tsai.it/random-duty/" class="card">
-                <div class="icon-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
+            <a href="https://radtools.tsai.it/random-duty/" class="tool-card">
+                <div class="icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                 </div>
-                <div class="card-title">Duty Roster Generator</div>
-                <div class="card-desc">
-                    值班排版表產生器。自動化排班邏輯，協助科部公平分配值班時段。
+                <h3>Duty Roster</h3>
+                <p>智慧值班排版產生器，公平分配科部人力資源。</p>
+                <div class="arrow-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </div>
             </a>
-        </div>
 
-        <footer>
-            &copy; 2025 Dr. Tsai. All Rights Reserved.
-        </footer>
+        </section>
     </div>
+
+    <footer class="footer">
+        &copy; 2025 Dr. Tsai. All Rights Reserved.
+    </footer>
 
 </body>
 </html>
