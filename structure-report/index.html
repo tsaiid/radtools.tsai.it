@@ -1,1 +1,37 @@
-<!doctype html><html lang="zh-TW"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="description" content="Radiology Structured Reporting Tools - AJCC Cancer Staging and NHI Lung-RADS"/><title>Structured Reporting Web Tools</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/><link rel="icon" type="image/x-icon" href="assets/images/favicon.ico"><link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png"><link rel="icon" type="image/png" sizes="48x48" href="assets/images/favicon-48x48.png"><script defer="defer" src="assets/js/vendors.9d8dd092712c73351f6c.js"></script><script defer="defer" src="assets/js/landing.0b722456b11d001c8b0e.js"></script></head><body><button id="theme-toggle" class="theme-toggle" aria-label="Toggle Dark Mode"><span>☀️</span></button><header><div class="logo-area"><h1>Structured Reporting Web Tools</h1></div><p class="subtitle">Advanced tools for Radiologists to generate structured reports efficiently.</p></header><main><div class="card-container"><a href="ajcc/" class="card"><div class="card-icon">🩺</div><h2>AJCC Cancer Staging</h2><p>Comprehensive calculators for AJCC 8th Edition Cancer Staging. Covers multiple organ systems including Lung, Liver, Prostate, and more.</p><span class="card-cta">Launch Tool</span> </a><a href="nhi-lung-rads/" class="card"><div class="card-icon">🫁</div><h2>NHI Lung-RADS</h2><p>Specialized tool for National Health Insurance (NHI) Lung-RADS reporting and management recommendations.</p><span class="card-cta">Launch Tool</span></a></div></main><footer><p>&copy;<script>document.write(new Date().getFullYear());</script>Structured Reporting Web Tools. Designed by <a href="https://tsai.it/" target="_blank" class="footer-link">Dr. I-Ta Tsai</a>.</p></footer></body></html>
+<!doctype html><html lang="zh-TW"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="description" content="Radiology Structured Reporting Tools - AJCC Cancer Staging and NHI Lung-RADS"/><meta name="color-scheme" content="light dark"/><title>Structured Reporting Web Tools</title><script>(function() {
+        var savedTheme = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = (savedTheme === 'dark' || savedTheme === 'light') ? savedTheme : (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();</script><style>:root {
+        color-scheme: light dark;
+      }
+      html[data-theme="dark"],
+      html[data-theme="dark"] body {
+        background-color: #0f172a !important;
+        color: #f1f5f9;
+        color-scheme: dark;
+      }
+      html[data-theme="light"],
+      html[data-theme="light"] body {
+        background-color: #f8f9fa !important;
+        color: #212529;
+        color-scheme: light;
+      }
+      /* Anti-FOUC 防護：隱藏未載入樣式之內容 */
+      body:not(.ready) {
+        visibility: hidden;
+        opacity: 0;
+      }
+      body.ready {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity 0.15s ease-in;
+      }</style><noscript><style>body:not(.ready) {
+          visibility: visible !important;
+          opacity: 1 !important;
+        }</style></noscript><script>setTimeout(function() {
+        if (document.body && !document.body.classList.contains('ready')) {
+          document.body.classList.add('ready');
+        }
+      }, 400);</script><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/><link rel="icon" type="image/x-icon" href="assets/images/favicon.ico"><link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png"><link rel="icon" type="image/png" sizes="48x48" href="assets/images/favicon-48x48.png"><script defer="defer" src="assets/js/landing.7ee403e3589e8759937e.js"></script></head><body><button id="theme-toggle" class="theme-toggle" aria-label="Toggle Dark Mode"><span>☀️</span></button><header><div class="logo-area"><h1>Structured Reporting Web Tools</h1></div><p class="subtitle">Advanced tools for Radiologists to generate structured reports efficiently.</p></header><main><div class="card-container"><a href="ajcc/" class="card"><div class="card-icon">🩺</div><h2>AJCC Cancer Staging</h2><p>Comprehensive calculators for AJCC 8th Edition Cancer Staging. Covers multiple organ systems including Lung, Liver, Prostate, and more.</p><span class="card-cta">Launch Tool</span> </a><a href="nhi-lung-rads/" class="card"><div class="card-icon">🫁</div><h2>NHI Lung-RADS</h2><p>Specialized tool for National Health Insurance (NHI) Lung-RADS reporting and management recommendations.</p><span class="card-cta">Launch Tool</span></a></div></main><footer><p>&copy;<script>document.write(new Date().getFullYear());</script>Structured Reporting Web Tools. Designed by <a href="https://tsai.it/" target="_blank" class="footer-link">Dr. I-Ta Tsai</a>.</p></footer></body></html>
